@@ -8,7 +8,10 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <StackPanel>
-            <Button />
+            <Button Height="20" Margin="2 2 2 2" Content="Taster"/>
+            <Button Height="20" Margin="2 2 2 2" Content="Taster"/>
+            <Button Height="20" Margin="2 2 2 2" Content="Taster"/>
+            <Button Height="20" Margin="2 2 2 2" Content="Taster"/>
         </StackPanel>
 
     </Grid>
