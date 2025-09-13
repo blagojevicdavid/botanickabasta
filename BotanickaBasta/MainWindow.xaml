@@ -15,6 +15,7 @@
                 <TabItem Header="Tab 2">
                     <Label Content="Sadrzaj 2"/> 
                 </TabItem>
+                <StackPanel></StackPanel>
             </TabControl>
         </DockPanel>
 
