@@ -5,11 +5,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BotanickaBasta"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Botanicka Basta" Height="450" Width="800">
     <Grid>
-        <StackPanel>
-            
-        </StackPanel>
+        <DockPanel>
+            <TabControl Name="tabA">
+                <TabItem Header="Tab 1">
+                    <Label Content="Sadrzaj 1"/>
+                </TabItem>
+                <TabItem Header="Tab 2">
+                    <Label Content="Sadrzaj 2"/> 
+                </TabItem>
+            </TabControl>
+        </DockPanel>
 
     </Grid>
 </Window>
