@@ -5,19 +5,129 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BotanickaBasta"
         mc:Ignorable="d"
-        Title="Botanicka Basta" Height="450" Width="800">
-    <Grid>
-        <DockPanel>
-            <TabControl Name="tabA">
-                <TabItem Header="Tab 1">
-                    <Label Content="Sadrzaj 1"/>
-                </TabItem>
-                <TabItem Header="Tab 2">
-                    <Label Content="Sadrzaj 2"/>
-                </TabItem>
-            </TabControl>
-        </DockPanel>
+        Title="Botanicka Basta"
+        Width="1100" Height="800"
+        MinWidth="900" MinHeight="600">
 
+    <Grid>
+        <TabControl Name="tabA">
+
+            <TabItem Header="Tab 1">
+                <Label Content="Sadrzaj 1"/>
+                <!--Ovde sadrzaj za prvi tab-->
+            </TabItem>
+
+            <!-- TAB 2: Mapa + Baštovani -->
+            <TabItem Header="Mapa baste i bastovani">
+                <!-- Glavni Grid: 2* | splitter | *  -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" MinWidth="400"/>
+                        <!-- Levo: mapa -->
+                        <ColumnDefinition Width="5"/>
+                        <!-- Srednji splitter -->
+                        <ColumnDefinition Width="*" MinWidth="300"/>
+                        <!-- Desno: baštovani -->
+                    </Grid.ColumnDefinitions>
+
+                    <!-- LEVO: MAPA (placeholder, skalira se preko Viewbox-a) -->
+                    <Border Grid.Column="0" Margin="10" Background="LightGreen">
+                        <Viewbox Stretch="Uniform">
+                            <Canvas Width="800" Height="600" Background="#F5FFF5">
+                                <TextBlock Text="Mapa (placeholder)" FontSize="20"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Canvas>
+                        </Viewbox>
+                    </Border>
+
+                    <!-- SREDINA: HORIZONTALNI SPLITTER (razdvaja levo i desno) -->
+                    <GridSplitter Grid.Column="1"
+                                  Width="5"
+                                  HorizontalAlignment="Stretch"
+                                  Background="#DDD"
+                                  ResizeDirection="Columns"
+                                  ResizeBehavior="PreviousAndNext"/>
+
+                    <!-- DESNO: BAŠTOVANI PANEL -->
+                    <Border Grid.Column="2" Margin="0 10 10 10">
+                        <!-- Unutrašnji Grid sa vertikalnim splitterom između DataGrid-a i ListBox-a -->
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <!-- Naslov -->
+                                <RowDefinition Height="Auto"/>
+                                <!-- Dugmad -->
+                                <RowDefinition Height="*"/>
+                                <!-- DataGrid -->
+                                <RowDefinition Height="5"/>
+                                <!-- Splitter -->
+                                <RowDefinition Height="Auto"/>
+                                <!-- Tekst: Biljke... -->
+                                <RowDefinition Height="*"/>
+                                <!-- ListBox biljaka -->
+                            </Grid.RowDefinitions>
+
+                            <!-- Naslov -->
+                            <TextBlock Grid.Row="0"
+                                       Text="Baštovani"
+                                       FontWeight="Bold"
+                                       FontSize="16"
+                                       Margin="0,0,0,10"
+                                       HorizontalAlignment="Center"/>
+
+                            <!-- Dugmad (za sada bez logike) -->
+                            <StackPanel Grid.Row="1"
+                                        Orientation="Horizontal"
+                                        HorizontalAlignment="Center"
+                                        Margin="0,0,0,10">
+                                <Button Content="Dodaj" Width="80" Margin="5"/>
+                                <Button Content="Izmeni" Width="80" Margin="5"/>
+                                <Button Content="Obriši" Width="80" Margin="5"/>
+                            </StackPanel>
+
+                            <!-- DataGrid za baštovane -->
+                            <DataGrid Grid.Row="2" x:Name="BastovaniGrid"
+                                      AutoGenerateColumns="False"
+                                      ItemsSource="{Binding Bastovani}"
+                                      CanUserAddRows="False"
+                                      IsReadOnly="True"
+                                      SelectionMode="Single"
+                                      SelectionUnit="FullRow"
+                                      EnableRowVirtualization="True"
+                                      EnableColumnVirtualization="True"
+                                      Margin="5">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Ime" Binding="{Binding Ime}" Width="*"/>
+                                    <DataGridTextColumn Header="Prezime" Binding="{Binding Prezime}" Width="*"/>
+                                    <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto" MinWidth="80"/>
+                                    <DataGridTextColumn Header="Telefon" Binding="{Binding Telefon}" Width="*"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <!-- VERTIKALNI SPLITTER između tabele i liste -->
+                            <GridSplitter Grid.Row="3"
+                                          Height="5"
+                                          HorizontalAlignment="Stretch"
+                                          Background="#DDD"
+                                          ResizeDirection="Rows"
+                                          ResizeBehavior="PreviousAndNext"/>
+
+                            <!-- Naslov liste biljaka + broj -->
+                            <TextBlock Grid.Row="4" Margin="5,10,5,5" FontWeight="Bold">
+                                <Run Text="Biljke za koje je zadužen"/>
+                                <Run Text=" ("/>
+                               <!-- <Run Text="{Binding ElementName=BastovaniGrid, Path=SelectedItem.ZaduzeneBiljke.Count, TargetNullValue=0}"/> -->
+                                <Run Text="):"/>
+                            </TextBlock>
+
+                            <!-- Lista biljaka selektovanog baštovana -->
+                            <ListBox Grid.Row="5" Margin="5"
+                                     ItemsSource="{Binding ElementName=BastovaniGrid, Path=SelectedItem.ZaduzeneBiljke}"
+                                     DisplayMemberPath="Naziv"/>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>
-    
