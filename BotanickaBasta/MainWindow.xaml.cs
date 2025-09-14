@@ -12,16 +12,11 @@ using System.Windows.Shapes;
 
 namespace BotanickaBasta
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
+
     public partial class MainWindow : Window
     {
-        // (možeš ukloniti ako ne koristiš)
-        private List<Biljka> biljka;
-        private List<Bastovan> bastovan;
 
-        // Desni panel – baštovani
+        // Desni panel – bastovani
         public ObservableCollection<Bastovan> Bastovani { get; } = new();
 
         // Leva mapa – sekcije i markeri
@@ -34,12 +29,11 @@ namespace BotanickaBasta
         {
             InitializeComponent();
 
-            // Centriraj mapu kad se prozor učita (ako koristiš ZoomPanBehavior)
-            Loaded += (_, __) => MapZoom.Center();
-
-            // DataContext da XAML Binding radi (Bastovani, MapSekcije)
+            // Binding
             DataContext = this;
 
+            //Test podaci
+            #region testpodaci
             // ===== Test podaci: baštovani =====
             var g1 = new Bastovan("Marko", "Petrović", 1, "0601234567");
             var g2 = new Bastovan("Jelena", "Jovanović", 2, "0619876543");
@@ -62,11 +56,11 @@ namespace BotanickaBasta
             MapSekcije.Add(new MapSekcija(s2, 320, 20, 420, 120, new Marker("A", 320 + 200, 20 + 50)));
             MapSekcije.Add(new MapSekcija(s3, 20, 220, 260, 160, new Marker("R", 20 + 115, 220 + 70)));
             MapSekcije.Add(new MapSekcija(s4, 300, 220, 480, 240, new Marker("AR", 300 + 220, 220 + 95)));
+            #endregion
         }
 
-        // ===================== MAPA: HANDLERI =====================
-
-        /// <summary> Klik na oblast sekcije (pravougaonik ili natpis u sekciji). </summary>
+        // ===================== MAPA HANDLERI ====================
+        // Klik na oblast sekcije 
         private void SekcijaArea_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var s = (sender as FrameworkElement)?.DataContext as MapSekcija;
@@ -74,7 +68,7 @@ namespace BotanickaBasta
             e.Handled = true;
         }
 
-        /// <summary> Klik na marker (bedž). </summary>
+        // Klik na marker
         private void Marker_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var s = (sender as FrameworkElement)?.DataContext as MapSekcija;
@@ -82,10 +76,10 @@ namespace BotanickaBasta
             e.Handled = true;
         }
 
-        /// <summary> Zajednički selektor: gasi stari highlight, pali novi (i na oblasti i na markeru). </summary>
+        // Zajednički selektor: gasi stari highlight, pali novi (i na oblasti i na markeru).
         private void SelectSekcija(MapSekcija s)
         {
-            // 1) skini highlight sa PRETHODNE selekcije
+            /// skini highlight sa prethodne selekcije
             if (_selektovana != null)
             {
                 var oldAreaCP = SekcijeItems.ItemContainerGenerator.ContainerFromItem(_selektovana) as ContentPresenter;
@@ -102,12 +96,13 @@ namespace BotanickaBasta
                     oldBadge.Background = (Brush)new BrushConverter().ConvertFromString("#2D89EF");
             }
 
-            // 2) postavi novu selekciju
+            /// postavi novu selekciju
             _selektovana = s;
 
+            /// prazan klik
             if (s == null) return;
 
-            // 3) upali highlight na NOVOJ selekciji
+            /// upali highlight na NOVOJ selekciji
             var areaCP = SekcijeItems.ItemContainerGenerator.ContainerFromItem(_selektovana) as ContentPresenter;
             var rect = FindChild<Rectangle>(areaCP, "AreaRect");
             if (rect != null)
@@ -121,10 +116,11 @@ namespace BotanickaBasta
             if (badge != null)
                 badge.Background = Brushes.OrangeRed;
 
-            // (opciono) ažuriraj desni panel detalja ovde…
+           
         }
 
-        /// <summary> Helper: nađi element po imenu unutar DataTemplate visual-tree-a. </summary>
+
+        // nađi element po imenu unutar DataTemplate visual-tree-a.
         private T FindChild<T>(DependencyObject parent, string name) where T : FrameworkElement
         {
             if (parent == null) return null;
@@ -139,11 +135,92 @@ namespace BotanickaBasta
             }
             return null;
         }
-        private void Mapa_ClearSelection(object sender, MouseButtonEventArgs e) //handler za prazan klik na kanvas
+
+        // handler za prazan klik na kanvas
+        private void Mapa_ClearSelection(object sender, MouseButtonEventArgs e)
         {
             SelectSekcija(null);
             
         }
+
+        #region Desni panel: handleri i pomoćne metode
+
+        // --- SelectionChanged (DataGrid baštovana / ListBox biljaka) ---
+        private void BastovaniGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateButtons();
+        }
+
+        private void BiljkeListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateButtons();
+        }
+
+        // --- Dugmad: Sekcije ---
+
+        private void IzmeniSekciju_Click(object sender, RoutedEventArgs e)
+        {
+            if (_selektovana == null) return;
+            MessageBox.Show($"Izmeni sekciju: {_selektovana.Sekcija?.Naziv} – nije još implementirano.");
+        }
+
+
+        // --- Dugmad: Raspored biljaka ---
+        private void DodeliBiljkuUSekciju_Click(object sender, RoutedEventArgs e)
+        {
+            var b = BiljkeListBox?.SelectedItem as Biljka;
+            if (_selektovana == null || b == null) return;
+
+            MessageBox.Show($"Dodeli biljku '{b.Naziv}' u sekciju '{_selektovana.Sekcija?.Naziv}' – nije još implementirano.");
+            UpdateButtons();
+        }
+
+        private void UkloniBiljkuIzSekcije_Click(object sender, RoutedEventArgs e)
+        {
+            if (_selektovana == null) return;
+
+            MessageBox.Show($"Ukloni biljku iz sekcije '{_selektovana.Sekcija?.Naziv}' – nije još implementirano.");
+            UpdateButtons();
+        }
+
+        private void PonistiAkciju_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Poništi (Undo) – nije još implementirano.");
+            UpdateButtons();
+        }
+
+        // --- Pomoćno: enable/disable dugmadi prema selekciji ---
+        private void UpdateButtons()
+        {
+            bool hasSekcija = _selektovana != null;
+            bool hasBiljka = (BiljkeListBox?.SelectedItem as Biljka) != null;
+
+            if (btnAssign != null) btnAssign.IsEnabled = hasSekcija && hasBiljka;
+            if (btnRemoveFromSekcija != null) btnRemoveFromSekcija.IsEnabled = hasSekcija;
+            if (btnUndo != null) btnUndo.IsEnabled = false;
+        }
+
+        // --- Pomoćno: osvežavanje panela "Detalji sekcije" ---
+        private void UpdateSekcijaDetails(MapSekcija s)
+        {
+            if (SekcijaNazivVal == null) return; // XAML još nije spreman?
+
+            if (s == null)
+            {
+                SekcijaNazivVal.Text = "—";
+                SekcijaOpisVal.Text = "—";
+                SekcijaKapacitetVal.Text = "—";
+            }
+            else
+            {
+                SekcijaNazivVal.Text = s.Sekcija?.Naziv ?? "—";
+                SekcijaOpisVal.Text = s.Sekcija?.Opis ?? "—";
+                SekcijaKapacitetVal.Text = (s.Sekcija != null) ? s.Sekcija.KapacitetMax.ToString() : "—";
+            }
+        }
+
+        #endregion
+
 
 
 

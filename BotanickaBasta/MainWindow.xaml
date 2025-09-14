@@ -124,36 +124,42 @@
 
                     <!-- DESNO: BAŠTOVANI PANEL -->
                     <Border Grid.Column="2" Margin="0 10 10 10" Background="White" ClipToBounds="True">
-                        <!-- Unutrašnji Grid sa vertikalnim splitterom između DataGrid-a i ListBox-a -->
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
-                                <!-- Naslov -->
+                                <!-- 0 Naslov -->
                                 <RowDefinition Height="Auto"/>
-                                <!-- Dugmad -->
+                                <!-- 1 Dugmad (Baštovani) -->
                                 <RowDefinition Height="*"/>
-                                <!-- DataGrid -->
+                                <!-- 2 DataGrid Baštovani -->
                                 <RowDefinition Height="5"/>
-                                <!-- Splitter -->
+                                <!-- 3 Splitter -->
                                 <RowDefinition Height="Auto"/>
-                                <!-- Tekst: Biljke... -->
+                                <!-- 4 Tekst: Biljke... -->
                                 <RowDefinition Height="*"/>
-                                <!-- ListBox biljaka -->
+                                <!-- 5 ListBox biljaka (baštovan) -->
+                                <RowDefinition Height="Auto"/>
+                                <!-- 6 Detalji sekcije -->
+                                <RowDefinition Height="Auto"/>
+                                <!-- 7 Raspored biljaka -->
                             </Grid.RowDefinitions>
 
                             <!-- Naslov -->
                             <TextBlock Grid.Row="0"
-                                       Text="Baštovani"
-                                       FontWeight="Bold"
-                                       FontSize="16"
-                                       Margin="0,0,0,10"
-                                       HorizontalAlignment="Center"/>
+                   Text="Baštovani"
+                   FontWeight="Bold"
+                   FontSize="16"
+                   Margin="0,0,0,10"
+                   HorizontalAlignment="Center"/>
 
-                            <!-- Dugmad (bez logike) -->
-                            <StackPanel Grid.Row="1"
-                                        Orientation="Horizontal"
-                                        HorizontalAlignment="Center"
-                                        Margin="0,0,0,10">
+                            <!-- Dugmad (Baštovani) -->
+                            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
+                                <StackPanel.Resources>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Margin" Value="3,0"/>
+                                    </Style>
+                                </StackPanel.Resources>
+
                                 <Button Content="Dodaj" Width="80" Margin="5"/>
                                 <Button Content="Izmeni" Width="80" Margin="5"/>
                                 <Button Content="Obriši" Width="80" Margin="5"/>
@@ -161,15 +167,16 @@
 
                             <!-- DataGrid za baštovane -->
                             <DataGrid Grid.Row="2" x:Name="BastovaniGrid"
-                                      AutoGenerateColumns="False"
-                                      ItemsSource="{Binding Bastovani}"
-                                      CanUserAddRows="False"
-                                      IsReadOnly="True"
-                                      SelectionMode="Single"
-                                      SelectionUnit="FullRow"
-                                      EnableRowVirtualization="True"
-                                      EnableColumnVirtualization="True"
-                                      Margin="5">
+                  AutoGenerateColumns="False"
+                  ItemsSource="{Binding Bastovani}"
+                  CanUserAddRows="False"
+                  IsReadOnly="True"
+                  SelectionMode="Single"
+                  SelectionUnit="FullRow"
+                  EnableRowVirtualization="True"
+                  EnableColumnVirtualization="True"
+                  Margin="5"
+                  SelectionChanged="BastovaniGrid_SelectionChanged">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Ime" Binding="{Binding Ime}" Width="*"/>
                                     <DataGridTextColumn Header="Prezime" Binding="{Binding Prezime}" Width="*"/>
@@ -178,28 +185,79 @@
                                 </DataGrid.Columns>
                             </DataGrid>
 
-                            <!-- VERTIKALNI SPLITTER između tabele i liste -->
+                            <!-- SPLITTER -->
                             <GridSplitter Grid.Row="3"
-                                          Height="5"
-                                          HorizontalAlignment="Stretch"
-                                          Background="#DDD"
-                                          ResizeDirection="Rows"
-                                          ResizeBehavior="PreviousAndNext"/>
+                      Height="5"
+                      HorizontalAlignment="Stretch"
+                      Background="#DDD"
+                      ResizeDirection="Rows"
+                      ResizeBehavior="PreviousAndNext"/>
 
-                            <!-- Naslov liste biljaka + broj -->
+                            <!-- Naslov liste biljaka -->
                             <TextBlock Grid.Row="4" Margin="5,10,5,5" FontWeight="Bold">
-                                <Run Text="Biljke za koje je zadužen"/>
-                                <Run Text=" ("/>
-                               <!-- <Run Text="{Binding ElementName=BastovaniGrid, Path=SelectedItem.ZaduzeneBiljke.Count, TargetNullValue=0}"/> -->
-                                <Run Text="):"/>
+            <Run Text="Biljke za koje je zadužen"/>
+            <Run Text=" ("/><Run Text=")"/>
                             </TextBlock>
 
                             <!-- Lista biljaka selektovanog baštovana -->
-                            <ListBox Grid.Row="5" Margin="5"
-                                     ItemsSource="{Binding ElementName=BastovaniGrid, Path=SelectedItem.ZaduzeneBiljke}"
-                                     DisplayMemberPath="Naziv"/>
+                            <ListBox Grid.Row="5" x:Name="BiljkeListBox" Margin="5"
+                 ItemsSource="{Binding ElementName=BastovaniGrid, Path=SelectedItem.ZaduzeneBiljke}"
+                 DisplayMemberPath="Naziv"
+                 SelectionChanged="BiljkeListBox_SelectionChanged"/>
+
+                            <!-- Detalji sekcije (read-only) -->
+                            <Border Grid.Row="6" Margin="5,12,5,10" Padding="8"
+                BorderBrush="#DDD" BorderThickness="1" CornerRadius="8" Background="#FAFAFA">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="8"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Row="0" Grid.ColumnSpan="3"
+                           Text="Detalji sekcije" FontWeight="Bold" Margin="0,0,0,8"/>
+
+                                    <TextBlock Grid.Row="1" Text="Naziv:" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="SekcijaNazivVal" Grid.Row="1" Grid.Column="2" Text="—"/>
+
+                                    <TextBlock Grid.Row="2" Text="Opis:" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="SekcijaOpisVal" Grid.Row="2" Grid.Column="2"
+                           Text="—" TextWrapping="Wrap"/>
+
+                                    <TextBlock Grid.Row="3" Text="Kapacitet:" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="SekcijaKapacitetVal" Grid.Row="3" Grid.Column="2" Text="—"/>
+                                </Grid>
+                            </Border>
+
+                            <!-- Raspored biljaka (dodela/uklanjanje/undo) -->
+                            <Border Grid.Row="7" Margin="5,0,5,8" Padding="6"
+                BorderBrush="#EEE" BorderThickness="1" CornerRadius="6" Background="#FCFCFC">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <StackPanel.Resources>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Margin" Value="3,0"/>
+                                        </Style>
+                                    </StackPanel.Resources>
+
+                                    <Button x:Name="btnAssign"             Content="Dodeli biljku u sekciju" Width="170"
+                        Click="DodeliBiljkuUSekciju_Click" IsEnabled="False"/>
+                                    <Button x:Name="btnRemoveFromSekcija"  Content="Ukloni iz sekcije"        Width="140"
+                        Click="UkloniBiljkuIzSekcije_Click" IsEnabled="False"/>
+                                    <Button x:Name="btnUndo"               Content="Poništi"                  Width="90"
+                        Click="PonistiAkciju_Click" IsEnabled="False"/>
+                                </StackPanel>
+                            </Border>
                         </Grid>
                     </Border>
+
+
                 </Grid>
             </TabItem>
         </TabControl>
