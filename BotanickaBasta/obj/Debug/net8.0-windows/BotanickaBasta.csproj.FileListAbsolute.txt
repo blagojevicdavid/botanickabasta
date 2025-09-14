@@ -19,3 +19,7 @@ C:\Users\david\Desktop\OOT Projekat\BotanickaBasta\obj\Debug\net8.0-windows\Bota
 C:\Users\david\Desktop\OOT Projekat\BotanickaBasta\obj\Debug\net8.0-windows\BotanickaBasta.genruntimeconfig.cache
 C:\Users\david\Desktop\OOT Projekat\BotanickaBasta\obj\Debug\net8.0-windows\ref\BotanickaBasta.dll
 C:\Users\david\Desktop\OOT Projekat\BotanickaBasta\obj\Debug\net8.0-windows\BotanickaBasta.sourcelink.json
+C:\Users\david\Desktop\OOT Projekat\BotanickaBasta\obj\Debug\net8.0-windows\BotanickaBasta.csproj.AssemblyReference.cache
+C:\Users\david\Desktop\OOT Projekat\BotanickaBasta\bin\Debug\net8.0-windows\Wpf.ZoomAndPan.dll
+C:\Users\david\Desktop\OOT Projekat\BotanickaBasta\obj\Debug\net8.0-windows\GeneratedInternalTypeHelper.g.cs
+C:\Users\david\Desktop\OOT Projekat\BotanickaBasta\obj\Debug\net8.0-windows\Botanick.FF937E91.Up2Date

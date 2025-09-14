@@ -3,20 +3,44 @@
   "WorkspaceRootPath": "C:\\Users\\david\\Desktop\\OOT Projekat\\BotanickaBasta\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{691DDA15-B9CA-42DD-AFBD-FD61DC751647}|BotanickaBasta.csproj|c:\\users\\david\\desktop\\oot projekat\\botanickabasta\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{691DDA15-B9CA-42DD-AFBD-FD61DC751647}|BotanickaBasta.csproj|solutionrelative:mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{691DDA15-B9CA-42DD-AFBD-FD61DC751647}|BotanickaBasta.csproj|c:\\users\\david\\desktop\\oot projekat\\botanickabasta\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{691DDA15-B9CA-42DD-AFBD-FD61DC751647}|BotanickaBasta.csproj|solutionrelative:mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{691DDA15-B9CA-42DD-AFBD-FD61DC751647}|BotanickaBasta.csproj|c:\\users\\david\\desktop\\oot projekat\\botanickabasta\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{691DDA15-B9CA-42DD-AFBD-FD61DC751647}|BotanickaBasta.csproj|solutionrelative:mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{691DDA15-B9CA-42DD-AFBD-FD61DC751647}|BotanickaBasta.csproj|c:\\users\\david\\desktop\\oot projekat\\botanickabasta\\zoompanbehavior.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{691DDA15-B9CA-42DD-AFBD-FD61DC751647}|BotanickaBasta.csproj|solutionrelative:zoompanbehavior.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{691DDA15-B9CA-42DD-AFBD-FD61DC751647}|BotanickaBasta.csproj|c:\\users\\david\\desktop\\oot projekat\\botanickabasta\\undoakcija.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{691DDA15-B9CA-42DD-AFBD-FD61DC751647}|BotanickaBasta.csproj|solutionrelative:undoakcija.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{691DDA15-B9CA-42DD-AFBD-FD61DC751647}|BotanickaBasta.csproj|c:\\users\\david\\desktop\\oot projekat\\botanickabasta\\bastovan.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{691DDA15-B9CA-42DD-AFBD-FD61DC751647}|BotanickaBasta.csproj|solutionrelative:bastovan.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{691DDA15-B9CA-42DD-AFBD-FD61DC751647}|BotanickaBasta.csproj|c:\\users\\david\\desktop\\oot projekat\\botanickabasta\\biljka.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{691DDA15-B9CA-42DD-AFBD-FD61DC751647}|BotanickaBasta.csproj|solutionrelative:biljka.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{691DDA15-B9CA-42DD-AFBD-FD61DC751647}|BotanickaBasta.csproj|c:\\users\\david\\desktop\\oot projekat\\botanickabasta\\bastovan.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{691DDA15-B9CA-42DD-AFBD-FD61DC751647}|BotanickaBasta.csproj|solutionrelative:bastovan.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{691DDA15-B9CA-42DD-AFBD-FD61DC751647}|BotanickaBasta.csproj|c:\\users\\david\\desktop\\oot projekat\\botanickabasta\\sekcija.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{691DDA15-B9CA-42DD-AFBD-FD61DC751647}|BotanickaBasta.csproj|solutionrelative:sekcija.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{691DDA15-B9CA-42DD-AFBD-FD61DC751647}|BotanickaBasta.csproj|c:\\users\\david\\desktop\\oot projekat\\botanickabasta\\marker.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{691DDA15-B9CA-42DD-AFBD-FD61DC751647}|BotanickaBasta.csproj|solutionrelative:marker.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{691DDA15-B9CA-42DD-AFBD-FD61DC751647}|BotanickaBasta.csproj|c:\\users\\david\\desktop\\oot projekat\\botanickabasta\\mapsekcija.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{691DDA15-B9CA-42DD-AFBD-FD61DC751647}|BotanickaBasta.csproj|solutionrelative:mapsekcija.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{691DDA15-B9CA-42DD-AFBD-FD61DC751647}|BotanickaBasta.csproj|c:\\users\\david\\desktop\\oot projekat\\botanickabasta\\dodela.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{691DDA15-B9CA-42DD-AFBD-FD61DC751647}|BotanickaBasta.csproj|solutionrelative:dodela.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,7 +50,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 340,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 10,
           "Children": [
             {
               "$type": "Bookmark",
@@ -38,7 +62,85 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 3,
+              "Title": "UndoAkcija.cs",
+              "DocumentMoniker": "C:\\Users\\david\\Desktop\\OOT Projekat\\BotanickaBasta\\UndoAkcija.cs",
+              "RelativeDocumentMoniker": "UndoAkcija.cs",
+              "ToolTip": "C:\\Users\\david\\Desktop\\OOT Projekat\\BotanickaBasta\\UndoAkcija.cs",
+              "RelativeToolTip": "UndoAkcija.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-14T19:21:43.352Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Dodela.cs",
+              "DocumentMoniker": "C:\\Users\\david\\Desktop\\OOT Projekat\\BotanickaBasta\\Dodela.cs",
+              "RelativeDocumentMoniker": "Dodela.cs",
+              "ToolTip": "C:\\Users\\david\\Desktop\\OOT Projekat\\BotanickaBasta\\Dodela.cs",
+              "RelativeToolTip": "Dodela.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-14T19:20:39.48Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "MapSekcija.cs",
+              "DocumentMoniker": "C:\\Users\\david\\Desktop\\OOT Projekat\\BotanickaBasta\\MapSekcija.cs",
+              "RelativeDocumentMoniker": "MapSekcija.cs",
+              "ToolTip": "C:\\Users\\david\\Desktop\\OOT Projekat\\BotanickaBasta\\MapSekcija.cs",
+              "RelativeToolTip": "MapSekcija.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-14T19:19:41.67Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Marker.cs",
+              "DocumentMoniker": "C:\\Users\\david\\Desktop\\OOT Projekat\\BotanickaBasta\\Marker.cs",
+              "RelativeDocumentMoniker": "Marker.cs",
+              "ToolTip": "C:\\Users\\david\\Desktop\\OOT Projekat\\BotanickaBasta\\Marker.cs",
+              "RelativeToolTip": "Marker.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-14T19:18:54.519Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Sekcija.cs",
+              "DocumentMoniker": "C:\\Users\\david\\Desktop\\OOT Projekat\\BotanickaBasta\\Sekcija.cs",
+              "RelativeDocumentMoniker": "Sekcija.cs",
+              "ToolTip": "C:\\Users\\david\\Desktop\\OOT Projekat\\BotanickaBasta\\Sekcija.cs",
+              "RelativeToolTip": "Sekcija.cs",
+              "ViewState": "AgIAAAEAAAAAAAAAAAAQwAQAAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-14T19:00:45.387Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ZoomPanBehavior.cs",
+              "DocumentMoniker": "C:\\Users\\david\\Desktop\\OOT Projekat\\BotanickaBasta\\ZoomPanBehavior.cs",
+              "RelativeDocumentMoniker": "ZoomPanBehavior.cs",
+              "ToolTip": "C:\\Users\\david\\Desktop\\OOT Projekat\\BotanickaBasta\\ZoomPanBehavior.cs",
+              "RelativeToolTip": "ZoomPanBehavior.cs",
+              "ViewState": "AgIAAJsAAAAAAAAAAAAmwL0AAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-14T13:32:20.369Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "MainWindow.xaml",
               "DocumentMoniker": "C:\\Users\\david\\Desktop\\OOT Projekat\\BotanickaBasta\\MainWindow.xaml",
               "RelativeDocumentMoniker": "MainWindow.xaml",
@@ -50,7 +152,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 5,
               "Title": "Biljka.cs",
               "DocumentMoniker": "C:\\Users\\david\\Desktop\\OOT Projekat\\BotanickaBasta\\Biljka.cs",
               "RelativeDocumentMoniker": "Biljka.cs",
@@ -63,26 +165,26 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "MainWindow.xaml.cs",
               "DocumentMoniker": "C:\\Users\\david\\Desktop\\OOT Projekat\\BotanickaBasta\\MainWindow.xaml.cs",
               "RelativeDocumentMoniker": "MainWindow.xaml.cs",
               "ToolTip": "C:\\Users\\david\\Desktop\\OOT Projekat\\BotanickaBasta\\MainWindow.xaml.cs",
               "RelativeToolTip": "MainWindow.xaml.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAACQAAAA0AAAAAAAAAA==",
+              "ViewState": "AgIAAGwAAAAAAAAAAAAmwIkAAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-12T13:24:36.703Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "Bastovan.cs",
               "DocumentMoniker": "C:\\Users\\david\\Desktop\\OOT Projekat\\BotanickaBasta\\Bastovan.cs",
               "RelativeDocumentMoniker": "Bastovan.cs",
               "ToolTip": "C:\\Users\\david\\Desktop\\OOT Projekat\\BotanickaBasta\\Bastovan.cs",
               "RelativeToolTip": "Bastovan.cs",
-              "ViewState": "AgIAAAQAAAAAAAAAAAAAAB4AAABSAAAAAAAAAA==",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAAAB8AAABuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-13T18:36:50.549Z",
               "EditorCaption": ""

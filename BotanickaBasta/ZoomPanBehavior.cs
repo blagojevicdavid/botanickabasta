@@ -190,7 +190,7 @@ namespace BotanickaBasta
             _panStart = e.GetPosition(this);
             CaptureMouse();
             Cursor = Cursors.Hand;
-            e.Handled = true;
+           // e.Handled = true; //deselekcija pritiskom na kanvas
         }
 
         protected override void OnMouseMove(MouseEventArgs e)

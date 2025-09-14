@@ -1,8 +1,23 @@
 {
   "version": 2,
-  "dgSpecHash": "DxExLzwTOPI=",
+  "dgSpecHash": "5llWqDY67Uk=",
   "success": true,
   "projectFilePath": "C:\\Users\\david\\Desktop\\OOT Projekat\\BotanickaBasta\\BotanickaBasta.csproj",
-  "expectedPackageFiles": [],
-  "logs": []
+  "expectedPackageFiles": [
+    "C:\\Users\\david\\.nuget\\packages\\wpf.zoomandpan\\1.0.2\\wpf.zoomandpan.1.0.2.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "message": "Package 'Wpf.ZoomAndPan 1.0.2' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0-windows7.0'. This package may not be fully compatible with your project.",
+      "projectPath": "C:\\Users\\david\\Desktop\\OOT Projekat\\BotanickaBasta\\BotanickaBasta.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Users\\david\\Desktop\\OOT Projekat\\BotanickaBasta\\BotanickaBasta.csproj",
+      "libraryId": "Wpf.ZoomAndPan",
+      "targetGraphs": [
+        "net8.0-windows7.0"
+      ]
+    }
+  ]
 }

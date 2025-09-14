@@ -6,8 +6,8 @@
         xmlns:local="clr-namespace:BotanickaBasta"
         mc:Ignorable="d"
         Title="Botanicka Basta"
-        Width="1100" Height="800"
-        MinWidth="900" MinHeight="600">
+        Width="1300" Height="800"
+        MinWidth="1300" MinHeight="800">
 
     <Grid>
         <TabControl Name="tabA">
@@ -42,16 +42,79 @@
                          FitFactor="1.0"
                          ClipToBounds="True"
                          HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <Canvas Width="800" Height="600" Background="#F5FFF5">
-                                <TextBlock Text="Mapa (placeholder)" FontSize="20"
-                 HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Canvas>
+                            <!-- Unutar local:ZoomPanBehavior -->
+                            <Grid x:Name="MapContent" Width="800" Height="600">
+                                <!-- (pozadina mape) -->
+                                <Canvas Width="800" Height="600" Background="#F5FFF5"/>
+
+                                <!-- SEKCIJE: crtamo oblasti (pravougaonike) -->
+                                <ItemsControl x:Name="SekcijeItems" ItemsSource="{Binding MapSekcije}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <Canvas Width="800" Height="600"  MouseLeftButtonDown="Mapa_ClearSelection" Background="White"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+
+                                    <ItemsControl.ItemContainerStyle>
+                                        <Style TargetType="ContentPresenter">
+                                            <Setter Property="Canvas.Left" Value="{Binding X}"/>
+                                            <Setter Property="Canvas.Top"  Value="{Binding Y}"/>
+                                            <EventSetter Event="MouseLeftButtonDown" Handler="SekcijaArea_MouseLeftButtonDown"/>
+                                            </Style>
+                                    </ItemsControl.ItemContainerStyle>
+
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Rectangle x:Name="AreaRect"
+                               Width="{Binding Sirina}"
+                               Height="{Binding Visina}"
+                               Fill="#E6F3FF"
+                               Stroke="#5B9BD5"
+                               StrokeThickness="2"
+                               RadiusX="6" RadiusY="6"
+                               MouseLeftButtonDown="SekcijaArea_MouseLeftButtonDown"/>
+                                                <TextBlock Text="{Binding Sekcija.Naziv}" Margin="6" FontWeight="Bold"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <!-- MARKERI: bedževi za sekcije (zaseban sloj iznad oblasti) -->
+                                <ItemsControl x:Name="MarkeriItems" ItemsSource="{Binding MapSekcije}" Panel.ZIndex="100">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <Canvas Width="800" Height="600"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+
+                                    <ItemsControl.ItemContainerStyle>
+                                        <Style TargetType="ContentPresenter">
+                                            <Setter Property="Canvas.Left" Value="{Binding Marker.X}"/>
+                                            <Setter Property="Canvas.Top"  Value="{Binding Marker.Y}"/>
+                                        </Style>
+                                    </ItemsControl.ItemContainerStyle>
+
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border x:Name="MarkerBadge"
+                        CornerRadius="10" Padding="6,2"
+                        Background="#2D89EF" Cursor="Hand"
+                        ToolTip="{Binding Sekcija.Opis}"
+                        MouseLeftButtonDown="Marker_MouseLeftButtonDown">
+                                                <TextBlock Text="{Binding Marker.Labela}" Foreground="White" FontWeight="Bold"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Grid>
+
                         </local:ZoomPanBehavior>
                     </Border>
 
 
 
-                    <!-- SREDINA: HORIZONTALNI SPLITTER (razdvaja levo i desno) -->
+                    <!-- SREDINA-->
                     <GridSplitter Grid.Column="1"
                                   Width="5"
                                   HorizontalAlignment="Stretch"
@@ -86,7 +149,7 @@
                                        Margin="0,0,0,10"
                                        HorizontalAlignment="Center"/>
 
-                            <!-- Dugmad (za sada bez logike) -->
+                            <!-- Dugmad (bez logike) -->
                             <StackPanel Grid.Row="1"
                                         Orientation="Horizontal"
                                         HorizontalAlignment="Center"
