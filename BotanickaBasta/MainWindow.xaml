@@ -20,7 +20,7 @@
             <!-- TAB 2: Mapa + Baštovani -->
             <TabItem Header="Mapa baste i bastovani">
                 <!-- Glavni Grid: 2* | splitter | *  -->
-                <Grid>
+                <Grid UseLayoutRounding="True" SnapsToDevicePixels="True">  <!--UseLayoutRounding="True"-->
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2*" MinWidth="400"/>
                         <!-- Levo: mapa -->
@@ -31,14 +31,25 @@
                     </Grid.ColumnDefinitions>
 
                     <!-- LEVO: MAPA (placeholder, skalira se preko Viewbox-a) -->
-                    <Border Grid.Column="0" Margin="10" Background="LightGreen">
-                        <Viewbox Stretch="Uniform">
+                    <!-- LEVO: MAPA -->
+                    <Border Grid.Column="0" Margin="10" Background="White" ClipToBounds="True">
+                        <local:ZoomPanBehavior x:Name="MapZoom"
+                         MinScale="0.6"
+                         MaxScale="4"
+                         ZoomStep="1.1"
+                         EdgeMargin="0"          
+                         AutoFitOnResize="True"
+                         FitFactor="1.0"
+                         ClipToBounds="True"
+                         HorizontalAlignment="Center" VerticalAlignment="Center">
                             <Canvas Width="800" Height="600" Background="#F5FFF5">
                                 <TextBlock Text="Mapa (placeholder)" FontSize="20"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                 HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Canvas>
-                        </Viewbox>
+                        </local:ZoomPanBehavior>
                     </Border>
+
+
 
                     <!-- SREDINA: HORIZONTALNI SPLITTER (razdvaja levo i desno) -->
                     <GridSplitter Grid.Column="1"
@@ -49,7 +60,7 @@
                                   ResizeBehavior="PreviousAndNext"/>
 
                     <!-- DESNO: BAŠTOVANI PANEL -->
-                    <Border Grid.Column="2" Margin="0 10 10 10">
+                    <Border Grid.Column="2" Margin="0 10 10 10" Background="White" ClipToBounds="True">
                         <!-- Unutrašnji Grid sa vertikalnim splitterom između DataGrid-a i ListBox-a -->
                         <Grid>
                             <Grid.RowDefinitions>

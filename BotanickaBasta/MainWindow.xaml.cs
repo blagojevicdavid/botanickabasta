@@ -22,10 +22,12 @@ namespace BotanickaBasta
         private List<Bastovan> bastovan;
 
         public ObservableCollection<Bastovan> Bastovani { get; } = new();
-
+        
         public MainWindow()
         {
             InitializeComponent();
+            Loaded += (_, __) => MapZoom.Center();
+
             DataContext = this;   // da {Binding Bastovani} “vidi” kolekciju
 
             // test podaci
