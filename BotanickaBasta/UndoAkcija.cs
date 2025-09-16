@@ -16,13 +16,13 @@ namespace BotanickaBasta
     public class UndoAkcija
     {
         private TipAkcije tip;
-        private Biljka biljka;
+        private Biljka1 biljka;
         private Sekcija izSekcije;  // može biti null za Dodavanje
         private Sekcija uSekciju;   // može biti null za Uklanjanje
 
         public UndoAkcija() { }
 
-        public UndoAkcija(TipAkcije tip, Biljka biljka, Sekcija izSekcije, Sekcija uSekciju)
+        public UndoAkcija(TipAkcije tip, Biljka1 biljka, Sekcija izSekcije, Sekcija uSekciju)
         {
             this.tip = tip;
             this.biljka = biljka;
@@ -31,7 +31,7 @@ namespace BotanickaBasta
         }
 
         public TipAkcije Tip { get { return tip; } set { tip = value; } }
-        public Biljka Biljka { get { return biljka; } set { biljka = value; } }
+        public Biljka1 Biljka { get { return biljka; } set { biljka = value; } }
         public Sekcija IzSekcije { get { return izSekcije; } set { izSekcije = value; } }
         public Sekcija USekciju { get { return uSekciju; } set { uSekciju = value; } }
     }

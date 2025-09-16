@@ -12,27 +12,162 @@
     <Grid>
         <TabControl Name="tabA">
 
-            <TabItem Header="Tab 1">
-                <Label Content="Sadrzaj 1"/>
-                <!--Ovde sadrzaj za prvi tab-->
+            <TabItem Header="Biljni eksponati">
+                <Border BorderThickness="10">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5*"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <DataGrid Name="biljkeDG"
+                  Grid.Column="0"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  CanUserAddRows="False"
+                  EnableRowVirtualization="True"
+                  EnableColumnVirtualization="True"
+                  FontSize="17"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch"
+                  Margin="5"
+                  MouseDoubleClick="biljkeDG_MouseDoubleClick"
+                  CanUserSortColumns="True"
+                  MinRowHeight="30">
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn Header="Slika" Width="60">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Image Source="{Binding Slika}" Width="35" Height="35"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                                <DataGridTextColumn Header="Sifra" Binding="{Binding Sifra}" Width="*"/>
+                                <DataGridTextColumn Header="Naucni naziv" Binding="{Binding NaucniNaziv}" Width="2*"/>
+                                <DataGridTextColumn Header="Uobicajeni naziv" Binding="{Binding UobicajeniNaziv}" Width="2*"/>
+                                <DataGridTextColumn Header="Porodica" Binding="{Binding Porodica}" Width="*"/>
+                                <DataGridTextColumn Header="Datum nabavke" Binding="{Binding DatumNabavke}" Width="*"/>
+                                <DataGridTextColumn Header="Lokacija" Binding="{Binding Lokacija}" Width="*"/>
+                                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="5">
+                            <Button Name="btnPrethodna" Content="Prethodna" Margin="5" Click="btnPrethodna_Click"/>
+                            <Label Name="labelStranica" Content="Stranica 1/1" VerticalAlignment="Center"/>
+                            <Button Name="btnSledeca" Content="Sledeća" Margin="5" Click="btnSledeca_Click"/>
+                        </StackPanel>
+
+                        <Grid Grid.Column="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="3*"></RowDefinition>
+                                <RowDefinition Height="1*"></RowDefinition>
+                            </Grid.RowDefinitions>
+
+                            <Border Grid.Column="2" BorderBrush="#DDD" BorderThickness="1" CornerRadius="8" Background="#FAFAFA" Margin="4.9">
+                                <Grid>
+
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"></RowDefinition>
+                                        <RowDefinition Height="*"></RowDefinition>
+                                        <RowDefinition Height="*"></RowDefinition>
+                                        <RowDefinition Height="*"></RowDefinition>
+                                        <RowDefinition Height="*"></RowDefinition>
+                                        <RowDefinition Height="*"></RowDefinition>
+                                        <RowDefinition Height="*"></RowDefinition>
+                                    </Grid.RowDefinitions>
+
+                                    <StackPanel VerticalAlignment="Top" Margin="10 8 10 0" Grid.Row="0">
+                                        <TextBlock FontSize="18">Šifra</TextBlock>
+                                        <TextBox Padding="3" Name="sifraUnos" FontSize="15"></TextBox>
+                                    </StackPanel>
+
+                                    <StackPanel VerticalAlignment="Top" Margin="10 8 10 0" Grid.Row="1">
+                                        <TextBlock FontSize="18">Naučni naziv</TextBlock>
+                                        <TextBox Padding="3" Name="naucniUnos" FontSize="15"></TextBox>
+                                    </StackPanel>
+
+                                    <StackPanel VerticalAlignment="Top" Margin="10 8 10 0" Grid.Row="2">
+                                        <TextBlock FontSize="18">Uobičajeni naziv</TextBlock>
+                                        <TextBox Padding="3" Name="uobicajeniUnos" FontSize="15"></TextBox>
+                                    </StackPanel>
+
+                                    <StackPanel VerticalAlignment="Top" Margin="10 8 10 0" Grid.Row="3">
+                                        <TextBlock FontSize="18">Porodica</TextBlock>
+                                        <TextBox Padding="3" Name="porodicaUnos" FontSize="15"></TextBox>
+                                    </StackPanel>
+
+                                    <StackPanel VerticalAlignment="Top" Margin="10 8 10 0" Grid.Row="4">
+                                        <TextBlock FontSize="18">Datum nabavke</TextBlock>
+                                        <TextBox Padding="3" Name="datumUnos" FontSize="15"></TextBox>
+                                    </StackPanel>
+
+                                    <StackPanel VerticalAlignment="Top" Margin="10 8 10 0" Grid.Row="5">
+                                        <TextBlock FontSize="18">Lokacija</TextBlock>
+                                        <TextBox Padding="3" Name="lokacijaUnos" FontSize="15"></TextBox>
+                                    </StackPanel>
+
+                                    <StackPanel VerticalAlignment="Top" Margin="10 8 10 0" Grid.Row="6">
+                                        <TextBlock FontSize="18">Status</TextBlock>
+                                        <TextBox Padding="3" Name="statusUnos" FontSize="15"></TextBox>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
+                            <Border Grid.Row="1" BorderBrush="#DDD" BorderThickness="1" CornerRadius="8" Background="#FAFAFA" Margin="4.9">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="2.5*"></RowDefinition>
+                                        <RowDefinition Height="1*"></RowDefinition>
+                                    </Grid.RowDefinitions>
+
+                                    <Grid Grid.Row="0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                        </Grid.RowDefinitions>
+                                        <Button Name="DodajBTN" Grid.Row="0" Grid.Column="0" Margin="16" FontSize="15" Click="DodajBTN_Click">Dodaj biljku</Button>
+                                        <Button Name="promeniSadrzajBTN" Grid.Row="0" Grid.Column="1" Margin="16" FontSize="15" Click="promeniSadrzajBTN_Click">Promeni sadrzaj</Button>
+                                        <Button Name="promeniSliku" Click="promeniSliku_Click" Grid.Row="1" Grid.Column="0" Margin="16" FontSize="15">Promeni sliku</Button>
+                                        <Button Name="ObrisiBTN" Click="ObrisiBTN_Click" Grid.Row="1" Grid.Column="1" Margin="16" FontSize="15">Obriši</Button>
+                                    </Grid>
+
+                                    <Button Name="eksportBTN" Grid.Row="1" Margin="18 5 18 10" FontSize="15" Click="eksportBTN_Click">Eksport u CSV fajl</Button>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </Grid>
+                </Border>
             </TabItem>
 
             <!-- TAB 2: Mapa + Baštovani -->
             <TabItem Header="Mapa baste i bastovani">
                 <!-- Glavni Grid: 2* | splitter | *  -->
-                <Grid UseLayoutRounding="True" SnapsToDevicePixels="True">  <!--UseLayoutRounding="True"-->
+                <Grid UseLayoutRounding="True" SnapsToDevicePixels="True">
+                    <!--UseLayoutRounding="True"-->
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*" MinWidth="400"/>
+                        <ColumnDefinition Width="23*" MinWidth="400"/>
+                        <ColumnDefinition Width="836*"/>
                         <!-- Levo: mapa -->
                         <ColumnDefinition Width="5"/>
                         <!-- Srednji splitter -->
-                        <ColumnDefinition Width="*" MinWidth="300"/>
+                        <ColumnDefinition Width="430*" MinWidth="300"/>
                         <!-- Desno: baštovani -->
                     </Grid.ColumnDefinitions>
 
                     <!-- LEVO: MAPA (placeholder, skalira se preko Viewbox-a) -->
                     <!-- LEVO: MAPA -->
-                    <Border Grid.Column="0" Margin="10" Background="White" ClipToBounds="True">
+                    <Border Grid.Column="0" Margin="10,10,10,10" Background="White" ClipToBounds="True" Grid.ColumnSpan="2">
                         <local:ZoomPanBehavior x:Name="MapZoom"
                          MinScale="0.6"
                          MaxScale="4"
@@ -60,7 +195,7 @@
                                             <Setter Property="Canvas.Left" Value="{Binding X}"/>
                                             <Setter Property="Canvas.Top"  Value="{Binding Y}"/>
                                             <EventSetter Event="MouseLeftButtonDown" Handler="SekcijaArea_MouseLeftButtonDown"/>
-                                            </Style>
+                                        </Style>
                                     </ItemsControl.ItemContainerStyle>
 
                                     <ItemsControl.ItemTemplate>
@@ -115,7 +250,7 @@
 
 
                     <!-- SREDINA-->
-                    <GridSplitter Grid.Column="1"
+                    <GridSplitter Grid.Column="2"
                                   Width="5"
                                   HorizontalAlignment="Stretch"
                                   Background="#DDD"
@@ -123,7 +258,7 @@
                                   ResizeBehavior="PreviousAndNext"/>
 
                     <!-- DESNO: BAŠTOVANI PANEL -->
-                    <Border Grid.Column="2" Margin="0 10 10 10" Background="White" ClipToBounds="True">
+                    <Border Grid.Column="3" Margin="0,10,10,10" Background="White" ClipToBounds="True">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
