@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BotanickaBasta")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bfcae1358c8c477f6e66480433060f6588b7d836")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3201a255d73e3b9c4ca4376c0d178f6148e4e74d")]
 [assembly: System.Reflection.AssemblyProductAttribute("BotanickaBasta")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BotanickaBasta")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
