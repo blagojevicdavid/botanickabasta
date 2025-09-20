@@ -247,6 +247,7 @@ namespace BotanickaBasta
 
         //-------------------------------------------------------------------------
         const string ULAZ = @"..\..\..\podaci\ulaz.txt";
+        const string IZLAZ = @"..\..\..\podaci\izlaz.csv";
         private void Biljka_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             SacuvajUFajl();
@@ -500,7 +501,7 @@ namespace BotanickaBasta
         {
             try
             {
-                using (StreamWriter sw = new StreamWriter("izlaz.csv", false, Encoding.UTF8))
+                using (StreamWriter sw = new StreamWriter(IZLAZ, false, Encoding.UTF8))
                 {
                     sw.WriteLine("Sifra,NaucniNaziv,UobicajeniNaziv,Porodica,DatumNabavke,Lokacija,Status,SlikaPath");
 
