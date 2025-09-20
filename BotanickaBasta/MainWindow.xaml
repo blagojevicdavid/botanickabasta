@@ -22,19 +22,20 @@
                         </Grid.ColumnDefinitions>
 
                         <DataGrid Name="biljkeDG"
-                  Grid.Column="0"
-                  AutoGenerateColumns="False"
-                  IsReadOnly="True"
-                  CanUserAddRows="False"
-                  EnableRowVirtualization="True"
-                  EnableColumnVirtualization="True"
-                  FontSize="17"
-                  HorizontalAlignment="Stretch"
-                  VerticalAlignment="Stretch"
-                  Margin="5"
-                  MouseDoubleClick="biljkeDG_MouseDoubleClick"
-                  CanUserSortColumns="True"
-                  MinRowHeight="30">
+Grid.Column="0"
+AutoGenerateColumns="False"
+IsReadOnly="True"
+CanUserAddRows="False"
+EnableRowVirtualization="True"
+EnableColumnVirtualization="True"
+FontSize="17"
+HorizontalAlignment="Stretch"
+VerticalAlignment="Stretch"
+Margin="5"
+MouseDoubleClick="biljkeDG_MouseDoubleClick"
+CanUserSortColumns="True"
+MinRowHeight="30"
+                    PreviewMouseLeftButtonDown="biljkeDG_PreviewMouseLeftButtonDown">
                             <DataGrid.Columns>
                                 <DataGridTemplateColumn Header="Slika" Width="60">
                                     <DataGridTemplateColumn.CellTemplate>
@@ -85,37 +86,45 @@
 
                                     <StackPanel VerticalAlignment="Top" Margin="10 8 10 0" Grid.Row="0">
                                         <TextBlock FontSize="18">Šifra</TextBlock>
-                                        <TextBox Padding="3" Name="sifraUnos" FontSize="15"></TextBox>
+                                        <TextBox Padding="3" Name="sifraUnos" FontSize="15" Text="{Binding Sifra, Mode=TwoWay}" LostFocus="sifraUnos_LostFocus"></TextBox>
                                     </StackPanel>
 
                                     <StackPanel VerticalAlignment="Top" Margin="10 8 10 0" Grid.Row="1">
                                         <TextBlock FontSize="18">Naučni naziv</TextBlock>
-                                        <TextBox Padding="3" Name="naucniUnos" FontSize="15"></TextBox>
+                                        <TextBox Padding="3" Name="naucniUnos" FontSize="15" Text="{Binding NaucniNaziv, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                                     </StackPanel>
 
                                     <StackPanel VerticalAlignment="Top" Margin="10 8 10 0" Grid.Row="2">
                                         <TextBlock FontSize="18">Uobičajeni naziv</TextBlock>
-                                        <TextBox Padding="3" Name="uobicajeniUnos" FontSize="15"></TextBox>
+                                        <TextBox Padding="3" Name="uobicajeniUnos" FontSize="15" Text="{Binding UobicajeniNaziv, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                                     </StackPanel>
 
                                     <StackPanel VerticalAlignment="Top" Margin="10 8 10 0" Grid.Row="3">
                                         <TextBlock FontSize="18">Porodica</TextBlock>
-                                        <TextBox Padding="3" Name="porodicaUnos" FontSize="15"></TextBox>
+                                        <TextBox Padding="3" Name="porodicaUnos" FontSize="15" Text="{Binding Porodica, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                                     </StackPanel>
 
                                     <StackPanel VerticalAlignment="Top" Margin="10 8 10 0" Grid.Row="4">
                                         <TextBlock FontSize="18">Datum nabavke</TextBlock>
-                                        <TextBox Padding="3" Name="datumUnos" FontSize="15"></TextBox>
+                                        <TextBox Padding="3" Name="datumUnos" FontSize="15">
+                                            <TextBox.Text>
+                                                <Binding Path="DatumNabavke" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <local:DatumValidationRule />
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
                                     </StackPanel>
 
                                     <StackPanel VerticalAlignment="Top" Margin="10 8 10 0" Grid.Row="5">
                                         <TextBlock FontSize="18">Lokacija</TextBlock>
-                                        <TextBox Padding="3" Name="lokacijaUnos" FontSize="15"></TextBox>
+                                        <TextBox Padding="3" Name="lokacijaUnos" FontSize="15" Text="{Binding Lokacija, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                                     </StackPanel>
 
                                     <StackPanel VerticalAlignment="Top" Margin="10 8 10 0" Grid.Row="6">
                                         <TextBlock FontSize="18">Status</TextBlock>
-                                        <TextBox Padding="3" Name="statusUnos" FontSize="15"></TextBox>
+                                        <TextBox Padding="3" Name="statusUnos" FontSize="15" Text="{Binding Status, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                                     </StackPanel>
                                 </Grid>
                             </Border>
@@ -123,8 +132,7 @@
                             <Border Grid.Row="1" BorderBrush="#DDD" BorderThickness="1" CornerRadius="8" Background="#FAFAFA" Margin="4.9">
                                 <Grid>
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="2.5*"></RowDefinition>
-                                        <RowDefinition Height="1*"></RowDefinition>
+                                        <RowDefinition Height="*"></RowDefinition>
                                     </Grid.RowDefinitions>
 
                                     <Grid Grid.Row="0">
@@ -136,13 +144,12 @@
                                             <RowDefinition></RowDefinition>
                                             <RowDefinition></RowDefinition>
                                         </Grid.RowDefinitions>
-                                        <Button Name="DodajBTN" Grid.Row="0" Grid.Column="0" Margin="16" FontSize="15" Click="DodajBTN_Click">Dodaj biljku</Button>
-                                        <Button Name="promeniSadrzajBTN" Grid.Row="0" Grid.Column="1" Margin="16" FontSize="15" Click="promeniSadrzajBTN_Click">Promeni sadrzaj</Button>
-                                        <Button Name="promeniSliku" Click="promeniSliku_Click" Grid.Row="1" Grid.Column="0" Margin="16" FontSize="15">Promeni sliku</Button>
-                                        <Button Name="ObrisiBTN" Click="ObrisiBTN_Click" Grid.Row="1" Grid.Column="1" Margin="16" FontSize="15">Obriši</Button>
+                                        <Button Name="DodajBTN" Grid.Row="0" Grid.Column="0" Margin="19" FontSize="15" Click="DodajBTN_Click">Dodaj biljku</Button>
+                                        <Button Name="eksportBTN" Grid.Row="0" Grid.Column="1" Margin="19" FontSize="15" Click="eksportBTN_Click">Eksport u CSV fajl</Button>
+                                        <Button Name="promeniSliku" Click="promeniSliku_Click" Grid.Row="1" Grid.Column="0" Margin="19" FontSize="15">Promeni sliku</Button>
+                                        <Button Name="ObrisiBTN" Click="ObrisiBTN_Click" Grid.Row="1" Grid.Column="1" Margin="19" FontSize="15">Obriši</Button>
                                     </Grid>
 
-                                    <Button Name="eksportBTN" Grid.Row="1" Margin="18 5 18 10" FontSize="15" Click="eksportBTN_Click">Eksport u CSV fajl</Button>
                                 </Grid>
                             </Border>
                         </Grid>

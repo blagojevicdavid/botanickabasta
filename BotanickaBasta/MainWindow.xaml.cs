@@ -1,6 +1,8 @@
 ﻿using Microsoft.Win32;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Windows;
@@ -69,6 +71,9 @@ namespace BotanickaBasta
             #endregion
 
             ucitajFajlove("ulaz.txt");
+            foreach (var b in biljke)
+                b.PropertyChanged += Biljka_PropertyChanged;
+
             viewSource.Source = biljke;
             viewSource.Filter += FilterStranice;
             biljkeDG.ItemsSource = viewSource.View;
@@ -241,6 +246,24 @@ namespace BotanickaBasta
 
 
         //-------------------------------------------------------------------------
+        private void Biljka_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            SacuvajUFajl();
+        }
+
+        private void SacuvajUFajl()
+        {
+            using (StreamWriter sw = new StreamWriter("ulaz.txt", false))
+            {
+                for (int i = 0; i < biljke.Count; i++)
+                {
+                    sw.Write(biljke[i].ToString());
+                    if (i < biljke.Count - 1)
+                        sw.WriteLine();
+                }
+            }
+        }
+
         private void FilterStranice(object sender, FilterEventArgs e)
         {
             Biljka b = e.Item as Biljka;
@@ -283,6 +306,7 @@ namespace BotanickaBasta
                 {
                     string[] delovi = linija.Split(',');
                     int sifra = int.Parse(delovi[0]);
+                    //int sifra = biljke.Count;
                     string naucniNaziv = delovi[1];
                     string uobicajeniNaziv = delovi[2];
                     string porodica = delovi[3];
@@ -318,6 +342,7 @@ namespace BotanickaBasta
                     }
                 }
                 PrikaziStranicu(trenutnaStranica);
+                //SacuvajUFajl();
                 using (StreamWriter sw = new StreamWriter("ulaz.txt", false))
                 {
                     foreach (Biljka biljka in biljke)
@@ -334,16 +359,7 @@ namespace BotanickaBasta
 
         private void biljkeDG_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (biljkeDG.SelectedItem is Biljka b)
-            {
-                sifraUnos.Text = b.Sifra.ToString();
-                naucniUnos.Text = b.NaucniNaziv;
-                uobicajeniUnos.Text = b.UobicajeniNaziv;
-                porodicaUnos.Text = b.Porodica;
-                datumUnos.Text = b.DatumNabavke;
-                lokacijaUnos.Text = b.Lokacija;
-                statusUnos.Text = b.Status;
-            }
+            this.DataContext = biljkeDG.SelectedItem as Biljka;
         }
 
         private void promeniSliku_Click(object sender, RoutedEventArgs e)
@@ -363,6 +379,7 @@ namespace BotanickaBasta
                     b.SlikaPath = relativePath;
                 }
                 PrikaziStranicu(trenutnaStranica);
+                //SacuvajUFajl();
                 using (StreamWriter sw = new StreamWriter("ulaz.txt", false))
                 {
                     foreach (Biljka biljka in biljke)
@@ -455,6 +472,7 @@ namespace BotanickaBasta
 
                 Biljka b = new Biljka(sifra, naucniUnos.Text, uobicajeniUnos.Text, porodicaUnos.Text, d.ToString("dd/MM/yyyy"), lokacijaUnos.Text, statusUnos.Text, path);
                 biljke.Add(b);
+                b.PropertyChanged += Biljka_PropertyChanged;
                 PrikaziStranicu(ukupnoStranica);
                 sifraUnos.Text = naucniUnos.Text = uobicajeniUnos.Text = porodicaUnos.Text = datumUnos.Text = lokacijaUnos.Text = statusUnos.Text = "";
 
@@ -473,98 +491,6 @@ namespace BotanickaBasta
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.ToString());
-                }
-            }
-        }
-
-        private void promeniSadrzajBTN_Click(object sender, RoutedEventArgs e)
-        {
-            int moze = 1;
-            int sifra = -1;
-            DateTime d = DateTime.Today;
-            string[] razdeljenDatum;
-
-            if (string.IsNullOrWhiteSpace(sifraUnos.Text) || string.IsNullOrWhiteSpace(naucniUnos.Text) ||
-                string.IsNullOrWhiteSpace(uobicajeniUnos.Text) || string.IsNullOrWhiteSpace(porodicaUnos.Text) ||
-                string.IsNullOrWhiteSpace(datumUnos.Text) || string.IsNullOrWhiteSpace(lokacijaUnos.Text) ||
-                string.IsNullOrWhiteSpace(statusUnos.Text))
-            {
-                moze = 0;
-                MessageBox.Show("Popunite sva polja!");
-            }
-
-            if (moze == 1)
-            {
-                if (!int.TryParse(sifraUnos.Text, out sifra))
-                {
-                    moze = 0;
-                    MessageBox.Show("Sifra moze da sadrzi samo brojeve!");
-                }
-            }
-
-            if (moze == 1)
-            {
-                foreach (Biljka biljka in biljke)
-                {
-                    if (biljka.Sifra == sifra && biljkeDG.SelectedItem is Biljka b && b.Sifra != sifra)
-                    {
-                        MessageBox.Show("Postoji biljka sa sifrom!");
-                        moze = 0;
-                        break;
-                    }
-                }
-            }
-
-            if (moze == 1)
-            {
-                try
-                {
-                    string separator = datumUnos.Text.Contains('.') ? "." :
-                                       datumUnos.Text.Contains('/') ? "/" : " ";
-                    razdeljenDatum = datumUnos.Text.Split(separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                    DateTime d1 = new DateTime(int.Parse(razdeljenDatum[2]), int.Parse(razdeljenDatum[1]), int.Parse(razdeljenDatum[0]));
-                    if (d1 > DateTime.Today)
-                    {
-                        moze = 0;
-                        MessageBox.Show("Ne mozete uneti datum iz buducnosti!");
-                    }
-                    else
-                    {
-                        d = d1;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    moze = 0;
-                    MessageBox.Show("Nevalidan datum: " + ex.Message);
-                }
-            }
-
-            if (moze == 1)
-            {
-                if (biljkeDG.SelectedItem is Biljka biljka)
-                {
-                    biljka.Sifra = sifra;
-                    biljka.NaucniNaziv = naucniUnos.Text;
-                    biljka.UobicajeniNaziv = uobicajeniUnos.Text;
-                    biljka.Porodica = porodicaUnos.Text;
-                    biljka.DatumNabavke = datumUnos.Text;
-                    biljka.Lokacija = lokacijaUnos.Text;
-                    biljka.Status = statusUnos.Text;
-                }
-                else
-                {
-                    MessageBox.Show("Selektujte biljku!");
-                }
-
-                sifraUnos.Text = naucniUnos.Text = uobicajeniUnos.Text = porodicaUnos.Text = datumUnos.Text = lokacijaUnos.Text = statusUnos.Text = "";
-                PrikaziStranicu(trenutnaStranica);
-                using (StreamWriter sw = new StreamWriter("ulaz.txt", false))
-                {
-                    foreach (Biljka bilj in biljke)
-                    {
-                        sw.WriteLine(bilj.ToString());
-                    }
                 }
             }
         }
@@ -588,6 +514,68 @@ namespace BotanickaBasta
             {
                 MessageBox.Show("Greška prilikom eksportovanja: " + ex.Message);
             }
+        }
+
+        private void sifraUnos_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (int.TryParse(sifraUnos.Text, out int novaSifra))
+            {
+                if (biljke.Any(b => b != biljkeDG.SelectedItem && b.Sifra == novaSifra))
+                {
+                    MessageBox.Show("Već postoji biljka sa ovom šifrom!");
+                    sifraUnos.Text = "";
+                    sifraUnos.Focus();
+                }
+            }
+        }
+
+        private void biljkeDG_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            // Dohvati element na koji je kliknuto
+            var dep = (DependencyObject)e.OriginalSource;
+
+            // Penji se kroz vizualno stablo dok ne nađeš DataGridRow ili null
+            while (dep != null && !(dep is DataGridRow))
+            {
+                dep = VisualTreeHelper.GetParent(dep);
+            }
+
+            // Ako nije DataGridRow, znači da je kliknuto u prazno
+            if (dep == null)
+            {
+                biljkeDG.UnselectAll();
+                biljkeDG.SelectedItem = null;
+            }
+        }
+
+    }
+
+    public class DatumValidationRule : ValidationRule
+    {
+        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
+        {
+            string s = value as string;
+            if (string.IsNullOrWhiteSpace(s))
+                return new ValidationResult(false, "Datum je obavezan");
+
+            DateTime temp;
+            string[] formati = new[]
+            {
+        "d.M.yyyy",
+        "dd.MM.yyyy",
+        "d/M/yyyy",
+        "dd/MM/yyyy",
+        "d M yyyy",
+        "dd MM yyyy"
+    };
+
+            if (!DateTime.TryParseExact(s, formati, cultureInfo, DateTimeStyles.None, out temp))
+                return new ValidationResult(false, "Nevalidan format datuma");
+
+            if (temp > DateTime.Today)
+                return new ValidationResult(false, "Datum ne može biti u budućnosti");
+
+            return ValidationResult.ValidResult;
         }
     }
 
