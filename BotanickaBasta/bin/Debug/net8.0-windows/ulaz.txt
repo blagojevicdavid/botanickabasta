@@ -1,3 +1,0 @@
-2,Gas,Drvo,Drvece,03/03/2023,Zrenjanin,Super,..\..\..\slike\Nalepnica-Sljiva.jpg
-55,Orah,Orah,Orah,01/01/2021,BG,Top,..\..\..\slike\Nalepnica-Kruska.jpg
-1,2,3,3,04/04/0404,4,4,..\..\..\..\..\..\..\..\Pictures\Screenshots\Screenshot (3).png
