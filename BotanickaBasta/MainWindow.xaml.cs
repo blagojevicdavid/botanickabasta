@@ -70,7 +70,7 @@ namespace BotanickaBasta
             MapSekcije.Add(new MapSekcija(s4, 300, 220, 480, 240, new Marker("AR", 300 + 220, 220 + 95)));
             #endregion
 
-            ucitajFajlove("ulaz.txt");
+            ucitajFajlove(ULAZ);
             foreach (var b in biljke)
                 b.PropertyChanged += Biljka_PropertyChanged;
 
@@ -138,7 +138,7 @@ namespace BotanickaBasta
             if (badge != null)
                 badge.Background = Brushes.OrangeRed;
 
-           
+
         }
 
 
@@ -162,7 +162,7 @@ namespace BotanickaBasta
         private void Mapa_ClearSelection(object sender, MouseButtonEventArgs e)
         {
             SelectSekcija(null);
-            
+
         }
 
         #region Desni panel: handleri i pomoćne metode
@@ -246,6 +246,7 @@ namespace BotanickaBasta
 
 
         //-------------------------------------------------------------------------
+        const string ULAZ = @"..\..\..\podaci\ulaz.txt";
         private void Biljka_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             SacuvajUFajl();
@@ -253,7 +254,7 @@ namespace BotanickaBasta
 
         private void SacuvajUFajl()
         {
-            using (StreamWriter sw = new StreamWriter("ulaz.txt", false))
+            using (StreamWriter sw = new StreamWriter(ULAZ, false))
             {
                 for (int i = 0; i < biljke.Count; i++)
                 {
@@ -343,7 +344,7 @@ namespace BotanickaBasta
                 }
                 PrikaziStranicu(trenutnaStranica);
                 //SacuvajUFajl();
-                using (StreamWriter sw = new StreamWriter("ulaz.txt", false))
+                using (StreamWriter sw = new StreamWriter(ULAZ, false))
                 {
                     foreach (Biljka biljka in biljke)
                     {
@@ -380,7 +381,7 @@ namespace BotanickaBasta
                 }
                 PrikaziStranicu(trenutnaStranica);
                 //SacuvajUFajl();
-                using (StreamWriter sw = new StreamWriter("ulaz.txt", false))
+                using (StreamWriter sw = new StreamWriter(ULAZ, false))
                 {
                     foreach (Biljka biljka in biljke)
                     {
@@ -478,7 +479,7 @@ namespace BotanickaBasta
 
                 try
                 {
-                    using (StreamWriter sw = new StreamWriter("ulaz.txt", false))
+                    using (StreamWriter sw = new StreamWriter(ULAZ, false))
                     {
                         for (int i = 0; i < biljke.Count; i++)
                         {
