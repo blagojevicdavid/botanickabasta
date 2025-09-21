@@ -1,0 +1,6 @@
+﻿Staklenik,2
+Alpinetum,4
+Rosarium,3
+Rosarium,1
+Rosarium,5
+Arboretum,6

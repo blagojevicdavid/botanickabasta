@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +25,7 @@ namespace BotanickaBasta
             this.visina = 0;
             this.marker = new Marker();
         }
+        public ObservableCollection<Biljka> BiljkeUSekciji { get; } = new ObservableCollection<Biljka>();
 
         public MapSekcija(Sekcija sekcija, double x, double y, double sirina, double visina, Marker marker)
         {
