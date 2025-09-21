@@ -319,7 +319,7 @@ MinRowHeight="30"
                             <!-- Lista biljaka selektovanog baštovana -->
                             <ListBox Grid.Row="5" x:Name="BiljkeListBox" Margin="5"
                  ItemsSource="{Binding ElementName=BastovaniGrid, Path=SelectedItem.zaduzeneBiljke}"
-                 DisplayMemberPath="Naziv"
+                 DisplayMemberPath="UobicajeniNaziv"
                  SelectionChanged="BiljkeListBox_SelectionChanged"/>
 
                             <!-- Detalji sekcije (read-only) -->

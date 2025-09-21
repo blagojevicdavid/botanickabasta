@@ -8,18 +8,18 @@ namespace BotanickaBasta
 {
     public class Dodela
     {
-        private Biljka1 biljka;
+        private Biljka biljka;
         private Sekcija sekcija;
 
         public Dodela() { }
 
-        public Dodela(Biljka1 biljka, Sekcija sekcija)
+        public Dodela(Biljka biljka, Sekcija sekcija)
         {
             this.biljka = biljka;
             this.sekcija = sekcija;
         }
 
-        public Biljka1 Biljka { get { return biljka; } set { biljka = value; } }
+        public Biljka Biljka { get { return biljka; } set { biljka = value; } }
         public Sekcija Sekcija { get { return sekcija; } set { sekcija = value; } }
     }
 }

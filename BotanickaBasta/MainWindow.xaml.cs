@@ -58,6 +58,18 @@ namespace BotanickaBasta
             #region testpodaci
             ucitajBastovane(BASTOVANI);
             LoadSekcijeFromFile(SEKCIJE);
+            foreach(var b in Bastovani)
+            {
+                b.zaduzeneBiljke.Add(new Biljka(101, "Rosa canina", "Šipak", "Rosaceae", "12/04/2023", "Rosarium", "Aktivna"));
+            }
+            /*foreach (var b in Bastovani)
+            {
+                MessageBox.Show(b.zaduzeneBiljke[0].NaucniNaziv);
+                //b.zaduzeneBiljke;
+            }*/
+
+
+            //Bastovani[0].zaduzeneBiljke.Add(new Biljka(101, "Rosa canina", "Šipak", "Rosaceae", "12/04/2023", "Rosarium", "Aktivna"));
 
             #endregion
 
@@ -198,7 +210,7 @@ namespace BotanickaBasta
             }
         }
 
-        private void biljkeDG_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void biljkeDG_MouseDoubleClick(object sender, MouseButtonEventArgs e) ////////////////////////////
         {
             this.DataContext = biljkeDG.SelectedItem as Biljka;
         }
@@ -501,10 +513,10 @@ namespace BotanickaBasta
 
         private void DodeliBiljkuUSekciju_Click(object sender, RoutedEventArgs e)
         {
-            var b = BiljkeListBox?.SelectedItem as Biljka1;
+            var b = BiljkeListBox?.SelectedItem as Biljka;
             if (_selektovana == null || b == null) return;
 
-            MessageBox.Show($"Dodeli biljku '{b.Naziv}' u sekciju '{_selektovana.Sekcija?.Naziv}' – nije još implementirano.");
+            MessageBox.Show($"Dodeli biljku '{b.UobicajeniNaziv}' u sekciju '{_selektovana.Sekcija?.Naziv}' – nije još implementirano.");
             UpdateButtons();
         }
 
