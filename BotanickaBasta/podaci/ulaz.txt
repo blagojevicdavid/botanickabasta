@@ -1,3 +1,6 @@
-3,3,3,3,03/03/0003,3,3,..\..\..\..\..\..\..\Pictures\Screenshots\Screenshot (3).png
-5,2,naziv,3,03/03/2022,3,3,..\..\..\slike\Nalepnica-Dunja.jpg
-4,4,4,4,04/04/0004,4,4,..\..\..\..\..\..\..\Pictures\Screenshots\Screenshot (12).png
+1,Aloe vera,Aloe vera,Asphodelaceae,03/03/2023,Staklenik,Premestiva,..\..\..\slike\aloe_leaf.jpg
+2,Ficus benjamina,Fikus,Moraceae,25/05/2024,Staklenik,Premestiva,..\..\..\slike\Ficus.jpg
+3,Helianthus annuus,Suncokret,Asteraceae,04/08/2025,Dečji kutak,Premestiva,..\..\..\slike\Helianthus-annuus.jpg
+4,Lavandula angustifolia,Lavanda,Lamiaceae,18/09/2025,Alpinetum,Premestiva,..\..\..\slike\lavanda.jpg
+5,Rosa chinensis,Kineska ruža,Rosaceae,02/02/2022,Rosarium,Premestiva,..\..\..\slike\Rosa.jpg
+6,Quercus robur,Hrast lužnjak,Fagaceae,20/02/2024,Arboretum,Premestiva,..\..\..\slike\Quercus_robur.jpg
