@@ -27,7 +27,11 @@ namespace BotanickaBasta
         // Desni panel – bastovani
         public ObservableCollection<Bastovan> Bastovani { get; } = new();
         private const string BASTOVANI = @"..\..\..\podaci\bastovani.txt";
-        private Bastovan? _editingTarget = null; // null=Dodaj, !=null=Izmena
+        private Bastovan? _editingTarget = null; // null=Dodaj
+
+        private Bastovan? _assignTarget = null;
+        private const string BASTOVAN_BILJKE = @"..\..\..\podaci\bastovan_biljke.txt";
+
 
 
 
@@ -58,10 +62,8 @@ namespace BotanickaBasta
             #region testpodaci
             ucitajBastovane(BASTOVANI);
             LoadSekcijeFromFile(SEKCIJE);
-            foreach(var b in Bastovani)
-            {
-                b.zaduzeneBiljke.Add(new Biljka(101, "Rosa canina", "Šipak", "Rosaceae", "12/04/2023", "Rosarium", "Aktivna"));
-            }
+            LoadAssignmentsFromFile(BASTOVAN_BILJKE);
+            
             /*foreach (var b in Bastovani)
             {
                 MessageBox.Show(b.zaduzeneBiljke[0].NaucniNaziv);
@@ -498,6 +500,7 @@ namespace BotanickaBasta
             UpdateButtons();
             Edit.IsEnabled = true;
             Delete.IsEnabled = true;
+            Zaduzenja.IsEnabled = true;
         }
 
         private void BiljkeListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -906,6 +909,97 @@ namespace BotanickaBasta
 
 
         #endregion
+
+
+        private void Zaduzenja_Click(object sender, RoutedEventArgs e)
+        {
+            if (BastovaniGrid.SelectedItem is not Bastovan sel)
+            {
+                MessageBox.Show("Selektujte baštovana.");
+                return;
+            }
+
+            _assignTarget = sel;
+            ZaduzTitle.Text = $"Zaduženja: {sel.Ime} {sel.Prezime} (ID: {sel.Id})";
+
+            cbSveBiljke.ItemsSource = biljke;              // sve biljke sa prvog taba
+            cbSveBiljke.DisplayMemberPath = "UobicajeniNaziv";
+
+            lbZaduzene.ItemsSource = sel.zaduzeneBiljke;   // živa kolekcija
+            popupZaduzenja.IsOpen = true;
+        }
+        private void AssignAdd_Click(object sender, RoutedEventArgs e)
+        {
+            if (_assignTarget == null) return;
+            if (cbSveBiljke.SelectedItem is not Biljka b)
+            {
+                MessageBox.Show("Izaberite biljku.");
+                return;
+            }
+            if (_assignTarget.zaduzeneBiljke.Any(x => x.Sifra == b.Sifra))
+            {
+                MessageBox.Show("Baštovan je već zadužen za ovu biljku.");
+                return;
+            }
+            _assignTarget.zaduzeneBiljke.Add(b);
+        }
+        private void AssignRemove_Click(object sender, RoutedEventArgs e)
+        {
+            if (_assignTarget == null) return;
+            if (lbZaduzene.SelectedItem is not Biljka b) return;
+            _assignTarget.zaduzeneBiljke.Remove(b);
+        }
+        private void AssignClose_Click(object sender, RoutedEventArgs e)
+        {
+            SaveAssignmentsToFile();
+            popupZaduzenja.IsOpen = false;
+            _assignTarget = null;
+        }
+
+        private void SaveAssignmentsToFile()
+        {
+            try
+            {
+                using var sw = new StreamWriter(BASTOVAN_BILJKE, false, Encoding.UTF8);
+                foreach (var g in Bastovani)
+                    foreach (var b in g.zaduzeneBiljke)
+                        sw.WriteLine($"{g.Id},{b.Sifra}");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Greška pri upisu zaduženja: " + ex.Message);
+            }
+        }
+        private void LoadAssignmentsFromFile(string putanja)
+        {
+            if (!File.Exists(putanja)) return;
+
+            try
+            {
+                var mapG = Bastovani.ToDictionary(g => g.Id);
+                var mapB = biljke.ToDictionary(b => b.Sifra);
+
+                foreach (var line in File.ReadAllLines(putanja, Encoding.UTF8))
+                {
+                    if (string.IsNullOrWhiteSpace(line)) continue;
+                    var p = line.Split(',');
+                    if (p.Length < 2) continue;
+                    if (!int.TryParse(p[0], out int gid)) continue;
+                    if (!int.TryParse(p[1], out int sifra)) continue;
+
+                    if (mapG.TryGetValue(gid, out var g) && mapB.TryGetValue(sifra, out var b))
+                    {
+                        if (!g.zaduzeneBiljke.Any(x => x.Sifra == b.Sifra))
+                            g.zaduzeneBiljke.Add(b);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Greška pri učitavanju zaduženja: " + ex.Message);
+            }
+        }
+
 
     }
 

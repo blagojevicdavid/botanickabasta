@@ -280,13 +280,14 @@ MinRowHeight="30"
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 0 0 0">
                                     <StackPanel.Resources>
                                         <Style TargetType="Button">
-                                            <Setter Property="Margin" Value="3,0"/>
+                                            <Setter Property="Margin" Value="4,0"/>
                                         </Style>
                                     </StackPanel.Resources>
 
-                                    <Button Content="Dodaj" Width="80" Margin="5" Name="Add" Click="Add_Click"/>
-                                    <Button Content="Izmeni" Width="80" Margin="5" Name="Edit" Click="Edit_Click" IsEnabled="False" />
-                                    <Button Content="Obriši" Width="80" Margin="5" Name="Delete" Click="Delete_Click" IsEnabled="False"/>
+                                    <Button Content="Dodaj" Width="58" Margin="5" Name="Add" Click="Add_Click"/>
+                                    <Button Content="Izmeni" Width="58" Margin="5" Name="Edit" Click="Edit_Click" IsEnabled="False" />
+                                    <Button Content="Obriši" Width="58" Margin="5" Name="Delete" Click="Delete_Click" IsEnabled="False"/>
+                                    <Button Content="Zaduženja" Width="58" Margin="5" Name="Zaduzenja" Click="Zaduzenja_Click" IsEnabled="false"/>
                                 </StackPanel>
                             </Border>
 
@@ -375,6 +376,7 @@ Click="btnEditSekcija_Click" IsEnabled="False"/>
                             </Border>
                         </Grid>
                     </Border>
+                    <!--POPUP Dodaj/Izmeni bastovana-->
                         <Popup x:Name="popupBastovan"
                                PlacementTarget="{Binding ElementName=RootGrid}"
                                Placement="Center"
@@ -396,41 +398,31 @@ Click="btnEditSekcija_Click" IsEnabled="False"/>
 
                                 <TextBlock Name="PopupTitle" Grid.Row="0" Text="Dodaj baštovana" FontSize="18" FontWeight="Bold" TextAlignment="Center" Margin="0 0 0 0"/>
 
-                                    <!-- Polja -->
-                                    <Grid Grid.Row="2" Margin="0">
-                                        <Grid.RowDefinitions>
+                                <Grid Grid.Row="2" Margin="0">
+                                    <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="150"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-                                        
-                                        
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="150"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
 
-                                        <!-- Ime -->
-                                        <TextBlock Grid.Row="0" Text="Ime:" Margin="0 0 10 8" VerticalAlignment="Center"/>
-                                        <TextBox   Grid.Row="0" Grid.Column="1" x:Name="txtIme" Margin="0 0 0 8" />
+                                    <TextBlock Grid.Row="0" Text="Ime:" Margin="0 0 10 8" VerticalAlignment="Center"/>
+                                    <TextBox   Grid.Row="0" Grid.Column="1" x:Name="txtIme" Margin="0 0 0 8" />
 
-                                        <!-- Prezime -->
-                                        <TextBlock Grid.Row="1" Text="Prezime:" Margin="0 0 10 8" VerticalAlignment="Center"/>
-                                        <TextBox   Grid.Row="1" Grid.Column="1" x:Name="txtPrezime" Margin="0 0 0 8"/>
+                                    <TextBlock Grid.Row="1" Text="Prezime:" Margin="0 0 10 8" VerticalAlignment="Center"/>
+                                    <TextBox   Grid.Row="1" Grid.Column="1" x:Name="txtPrezime" Margin="0 0 0 8"/>
 
-                                        <!-- ID -->
-                                        <TextBlock Grid.Row="2" Text="ID:" Margin="0 0 10 8" VerticalAlignment="Center"/>
-                                        <TextBox   Grid.Row="2" Grid.Column="1" x:Name="txtZaposlenickiId" Margin="0 0 0 8"/>
+                                    <TextBlock Grid.Row="2" Text="ID:" Margin="0 0 10 8" VerticalAlignment="Center"/>
+                                    <TextBox   Grid.Row="2" Grid.Column="1" x:Name="txtZaposlenickiId" Margin="0 0 0 8"/>
 
-                                        <!-- Telefon -->
-                                        <TextBlock Grid.Row="3" Text="Telefon:" Margin="0 0 10 0" VerticalAlignment="Center"/>
-                                        <TextBox   Grid.Row="3" Grid.Column="1" x:Name="txtTelefon"/>
-                                    </Grid>
-
-
-                                    <!-- Dugmad -->
-                                    <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
+                                    <TextBlock Grid.Row="3" Text="Telefon:" Margin="0 0 10 0" VerticalAlignment="Center"/>
+                                    <TextBox   Grid.Row="3" Grid.Column="1" x:Name="txtTelefon"/>
+                                </Grid>
+                                <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
                                         <Button Content="Otkaži" MinWidth="90" Click="BtnCancel_Click"/>
                                         <Button Content="Sačuvaj" MinWidth="100" Margin="10 0 0 0"
                                                 Click="BtnSave_Click"/>
@@ -492,6 +484,61 @@ Click="btnEditSekcija_Click" IsEnabled="False"/>
                             </Grid>
                         </Border>
                     </Popup>
+                    
+                    <!--POPUP Zaduzen biljke-->
+                    <!-- POPUP: zaduženja baštovana -->
+                    <Popup x:Name="popupZaduzenja"
+       PlacementTarget="{Binding ElementName=RootGrid}"
+       Placement="Center"
+       AllowsTransparency="True"
+       StaysOpen="False"
+       PopupAnimation="Fade"
+       Panel.ZIndex="20">
+                        <Border Background="White" Padding="18" CornerRadius="12" BorderBrush="#DDD" BorderThickness="1">
+                            <Grid Width="520">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="8"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="8"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="12"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock x:Name="ZaduzTitle" Grid.Row="0" FontSize="18" FontWeight="Bold" TextAlignment="Center"/>
+
+                                <Grid Grid.Row="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="160"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Dodaj biljku:"/>
+                                    <ComboBox x:Name="cbSveBiljke" Grid.Column="1" MinWidth="260" IsEditable="True"/>
+                                    <Button Grid.Column="2" Content="Dodaj" Margin="8,0,0,0" MinWidth="80" Click="AssignAdd_Click"/>
+                                </Grid>
+
+                                <GroupBox Grid.Row="4" Header="Zadužene biljke">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <ListBox x:Name="lbZaduzene" Grid.Column="0" Margin="0,0,8,0" DisplayMemberPath="UobicajeniNaziv"/>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Top">
+                                            <Button Content="Ukloni" MinWidth="90" Click="AssignRemove_Click"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </GroupBox>
+
+                                <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Right">
+                                    <Button Content="Zatvori" MinWidth="100" Click="AssignClose_Click"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </Popup>
+
 
                 </Grid>
             </TabItem>
