@@ -5,7 +5,7 @@ using System.Windows.Media.Imaging;
 
 namespace BotanickaBasta
 {
-    internal class Biljka : INotifyPropertyChanged
+    public class Biljka : INotifyPropertyChanged
     {
         private int sifra;
         private string naucniNaziv, uobicajeniNaziv, porodica, datumNabavke, lokacija, status, slikaPath;

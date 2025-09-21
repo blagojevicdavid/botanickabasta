@@ -161,9 +161,8 @@ MinRowHeight="30"
 
             <!-- TAB 2: Mapa + Baštovani -->
             <TabItem Header="Mapa baste i bastovani">
-                <!-- Glavni Grid: 2* | splitter | *  -->
+
                 <Grid UseLayoutRounding="True" SnapsToDevicePixels="True">
-                    <!--UseLayoutRounding="True"-->
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="23*" MinWidth="400"/>
                         <ColumnDefinition Width="836*"/>
@@ -185,13 +184,10 @@ MinRowHeight="30"
                          FitFactor="1.0"
                          ClipToBounds="True"
                          HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <!-- Unutar local:ZoomPanBehavior -->
                             <Grid x:Name="MapContent"  >
-                                <!-- (pozadina mape) -->
+                                <!-- pozadina mape -->
                                 <Canvas Name="MapCanvas" Width="800" Height="600" Background="#F5FFF5"/>
-                                <!--F5FFF5-->
-
-                                <!-- SEKCIJE: crtamo oblasti (pravougaonike) -->
+                                
                                 <ItemsControl x:Name="SekcijeItems" ItemsSource="{Binding MapSekcije}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
@@ -224,7 +220,6 @@ MinRowHeight="30"
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
 
-                                <!-- MARKERI: bedževi za sekcije (zaseban sloj iznad oblasti) -->
                                 <ItemsControl x:Name="MarkeriItems" ItemsSource="{Binding MapSekcije}" Panel.ZIndex="100">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
@@ -256,7 +251,7 @@ MinRowHeight="30"
                         </local:ZoomPanBehavior>
                     </Border>
 
-                    <!-- DESNO BSTOVANI -->
+                    <!-- DESNO BASTOVANI -->
                     <Border Grid.Column="3" Margin="0,10,10,10" Background="White" ClipToBounds="True">
                         <Grid>
                             <Grid.RowDefinitions>
@@ -295,7 +290,7 @@ MinRowHeight="30"
                                 </StackPanel>
                             </Border>
 
-                            <!-- DataGrid za baštovane -->
+                            <!-- DataGrid za bastovane -->
                             <DataGrid Grid.Row="2" x:Name="BastovaniGrid"
                   AutoGenerateColumns="False"
                   ItemsSource="{Binding Bastovani}"
@@ -323,7 +318,7 @@ MinRowHeight="30"
 
                             <!-- Lista biljaka selektovanog baštovana -->
                             <ListBox Grid.Row="5" x:Name="BiljkeListBox" Margin="5"
-                 ItemsSource="{Binding ElementName=BastovaniGrid, Path=SelectedItem.ZaduzeneBiljke}"
+                 ItemsSource="{Binding ElementName=BastovaniGrid, Path=SelectedItem.zaduzeneBiljke}"
                  DisplayMemberPath="Naziv"
                  SelectionChanged="BiljkeListBox_SelectionChanged"/>
 

@@ -59,17 +59,6 @@ namespace BotanickaBasta
             ucitajBastovane(BASTOVANI);
             LoadSekcijeFromFile(SEKCIJE);
 
-            // ===== Test podaci: sekcije + markeri na mapi =====
-            //var s1 = new Sekcija("Staklenik", 30, "Staklena bašta");
-            //var s2 = new Sekcija("Alpinetum", 20, "Planinske vrste");
-            //var s3 = new Sekcija("Rosarium", 50, "Ružičnjak");
-            //var s4 = new Sekcija("Arboretum", 80, "Drvenaste vrste");
-
-            // Oblasti (X,Y,Š,V) + Marker (Labela, X, Y) — u koordinatama platna (npr. 800x600)
-            //MapSekcije.Add(new MapSekcija(s1, 20, 20, 260, 160, new Marker("S1", 20 + 120, 20 + 70)));
-            //MapSekcije.Add(new MapSekcija(s2, 320, 20, 420, 120, new Marker("A", 320 + 200, 20 + 50)));
-            //MapSekcije.Add(new MapSekcija(s3, 20, 220, 260, 160, new Marker("R", 20 + 115, 220 + 70)));
-            //MapSekcije.Add(new MapSekcija(s4, 300, 220, 480, 240, new Marker("AR", 300 + 220, 220 + 95)));
             #endregion
 
             #region TAB 1
