@@ -42,7 +42,7 @@ MinRowHeight="30"
                                 <DataGridTemplateColumn Header="Slika" Width="60">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <Image Source="{Binding Slika}" Width="35" Height="35"/>
+                                            <Image Source="{Binding Slika}" Width="55" Height="45"/>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
