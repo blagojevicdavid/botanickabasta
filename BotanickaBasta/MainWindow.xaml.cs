@@ -39,6 +39,7 @@ namespace BotanickaBasta
         public ObservableCollection<MapSekcija> MapSekcije { get; } = new();
         private const string SEKCIJE = @"..\..\..\podaci\sekcija.txt";
         private MapSekcija? _editingSekcija = null;
+        private const string SEKCIJA_BILJKE = @"..\..\..\podaci\sekcija_biljke.txt";
 
 
         // Trenutno selektovana sekcija na mapi
@@ -50,6 +51,12 @@ namespace BotanickaBasta
         private int trenutnaStranica = 1;
         private int stavkiPoStranici = 16;
         private int ukupnoStranica => (int)Math.Ceiling((double)biljke.Count / stavkiPoStranici);
+
+        private const string STATUS_U_SEKCIJI = "U sekciji";
+        private const string STATUS_SLOBODNA = "Aktivna"; // ili "Slobodna" – koristi isti naziv svuda
+        private static readonly string[] ZABRANJENI_STATUSI = { "Uginula", "Arhivirana", "Neaktivna" };
+
+
         // BILJKE ---------------------------------------------------------------------------- BILJKE
         public MainWindow()
         {
@@ -62,7 +69,7 @@ namespace BotanickaBasta
             #region testpodaci
             ucitajBastovane(BASTOVANI);
             LoadSekcijeFromFile(SEKCIJE);
-            LoadAssignmentsFromFile(BASTOVAN_BILJKE);
+            
             
             /*foreach (var b in Bastovani)
             {
@@ -87,7 +94,8 @@ namespace BotanickaBasta
             #endregion
 
             #region TAB 2
-
+            LoadAssignmentsFromFile(BASTOVAN_BILJKE);
+            LoadSectionAssignmentsFromFile(SEKCIJA_BILJKE);
 
 
             #endregion
@@ -437,10 +445,10 @@ namespace BotanickaBasta
                     oldRect.StrokeThickness = 2;
                 }
 
-                var oldMarkCP = MarkeriItems.ItemContainerGenerator.ContainerFromItem(_selektovana) as ContentPresenter;
-                var oldBadge = FindChild<Border>(oldMarkCP, "MarkerBadge");
-                if (oldBadge != null)
-                    oldBadge.Background = (Brush)new BrushConverter().ConvertFromString("#2D89EF");
+                //var oldMarkCP = MarkeriItems.ItemContainerGenerator.ContainerFromItem(_selektovana) as ContentPresenter;
+                //var oldBadge = FindChild<Border>(oldMarkCP, "MarkerBadge");
+               // if (oldBadge != null)
+                //    oldBadge.Background = (Brush)new BrushConverter().ConvertFromString("#2D89EF");
             }
 
             // postavi novu selekciju
@@ -457,10 +465,10 @@ namespace BotanickaBasta
                     rect.StrokeThickness = 3;
                 }
 
-                var markCP = MarkeriItems.ItemContainerGenerator.ContainerFromItem(_selektovana) as ContentPresenter;
-                var badge = FindChild<Border>(markCP, "MarkerBadge");
-                if (badge != null)
-                    badge.Background = Brushes.OrangeRed;
+               // var markCP = MarkeriItems.ItemContainerGenerator.ContainerFromItem(_selektovana) as ContentPresenter;
+               // var badge = FindChild<Border>(markCP, "MarkerBadge");
+               // if (badge != null)
+               //     badge.Background = Brushes.OrangeRed;
             }
 
             // ⬇️ KLJUČNO: odmah osveži detalje i dugmad na PRVI klik
@@ -514,27 +522,82 @@ namespace BotanickaBasta
             MessageBox.Show($"Izmeni sekciju: {_selektovana.Sekcija?.Naziv} – nije još implementirano.");
         }
 
-        private void DodeliBiljkuUSekciju_Click(object sender, RoutedEventArgs e)
-        {
-            var b = BiljkeListBox?.SelectedItem as Biljka;
-            if (_selektovana == null || b == null) return;
-
-            MessageBox.Show($"Dodeli biljku '{b.UobicajeniNaziv}' u sekciju '{_selektovana.Sekcija?.Naziv}' – nije još implementirano.");
-            UpdateButtons();
-        }
-
         private void UkloniBiljkuIzSekcije_Click(object sender, RoutedEventArgs e)
         {
-            if (_selektovana == null) return;
+            if (_selektovana == null)
+            {
+                MessageBox.Show("Najpre izaberite sekciju na mapi.");
+                return;
+            }
 
-            MessageBox.Show($"Ukloni biljku iz sekcije '{_selektovana.Sekcija?.Naziv}' – nije još implementirano.");
-            UpdateButtons();
+            var b = BiljkeListBox?.SelectedItem as Biljka;
+            if (b == null)
+            {
+                MessageBox.Show("Izaberite biljku iz liste zaduženih biljaka baštovana.");
+                return;
+            }
+
+            var hit = _selektovana.BiljkeUSekciji.FirstOrDefault(x => x.Sifra == b.Sifra);
+            if (hit == null)
+            {
+                MessageBox.Show("Ta biljka nije u izabranoj sekciji.");
+                return;
+            }
+
+            // UNDO – zapamti staro stanje
+            var oldStatus = b.Status;
+            var oldLokacija = b.Lokacija;
+
+            // 1) Ukloni iz sekcije
+            _selektovana.BiljkeUSekciji.Remove(hit);
+
+            // 2) Vrati biljku u “slobodno” stanje
+            b.Status = STATUS_SLOBODNA;
+            b.Lokacija = string.Empty;
+
+            // 3) Snimi u fajlove
+            SaveSectionAssignmentsToFile(); // sekcija_biljke.txt
+            SacuvajUFajl();                 // ulaz.txt
+
+            // 4) UNDO zapis
+            _undoStack.Push(new UndoOp
+            {
+                Type = UndoType.RemoveFromSekcija,
+                Sekcija = _selektovana,
+                Biljka = b,
+                OldStatus = oldStatus,
+                OldLokacija = oldLokacija
+            });
+            if (btnUndo != null) btnUndo.IsEnabled = _undoStack.Count > 0;
         }
 
         private void PonistiAkciju_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Poništi (Undo) – nije još implementirano.");
-            UpdateButtons();
+            if (_undoStack.Count == 0) return;
+
+            var op = _undoStack.Pop();
+
+            if (op.Type == UndoType.AddToSekcija)
+            {
+                var item = op.Sekcija.BiljkeUSekciji.FirstOrDefault(x => x.Sifra == op.Biljka.Sifra);
+                if (item != null) op.Sekcija.BiljkeUSekciji.Remove(item);
+
+                op.Biljka.Status = op.OldStatus;
+                op.Biljka.Lokacija = op.OldLokacija;
+            }
+            else if (op.Type == UndoType.RemoveFromSekcija)
+            {
+                if (!op.Sekcija.BiljkeUSekciji.Any(x => x.Sifra == op.Biljka.Sifra))
+                    op.Sekcija.BiljkeUSekciji.Add(op.Biljka);
+
+                op.Biljka.Status = op.OldStatus;
+                op.Biljka.Lokacija = op.OldLokacija;
+            }
+
+            SaveSectionAssignmentsToFile();
+            SacuvajUFajl();
+
+            if (btnUndo != null) btnUndo.IsEnabled = _undoStack.Count > 0;
         }
 
         
@@ -548,11 +611,10 @@ namespace BotanickaBasta
             if (btnAssign != null) btnAssign.IsEnabled = hasSekcija && hasBiljka;
             if (btnRemoveFromSekcija != null) btnRemoveFromSekcija.IsEnabled = hasSekcija;
             if (btnUndo != null) btnUndo.IsEnabled = false;
-
+            if (btnUndo != null) btnUndo.IsEnabled = _undoStack.Count > 0;
             if (btnEditSekcija != null) btnEditSekcija.IsEnabled = hasSekcija;
 
         }
-
         private void UpdateSekcijaDetails(MapSekcija s)
         {
             if (SekcijaNazivVal == null) return; 
@@ -587,7 +649,6 @@ namespace BotanickaBasta
 
             popupSekcija.IsOpen = true;
         }
-
         private static string RemoveDiacritics(string input)
         {
             if (string.IsNullOrEmpty(input)) return input;
@@ -598,7 +659,6 @@ namespace BotanickaBasta
                     sb.Append(ch);
             return sb.ToString().Normalize(NormalizationForm.FormC);
         }
-
         private static string GetMarkerLabel(string naziv)
         {
             if (string.IsNullOrWhiteSpace(naziv)) return "?";
@@ -608,8 +668,6 @@ namespace BotanickaBasta
             if (letters.Length == 1) return letters.ToUpperInvariant();
             return letters.Substring(0, 2).ToUpperInvariant();
         }
-
-
         private void LoadSekcijeFromFile(string putanja)
         {
             MapSekcije.Clear();
@@ -652,7 +710,6 @@ namespace BotanickaBasta
                 sr?.Close();
             }
         }
-
         private void SaveSekcijeToFile()
         {
             try
@@ -700,7 +757,7 @@ namespace BotanickaBasta
             _editingSekcija.Marker.Labela = GetMarkerLabel(_editingSekcija.Sekcija.Naziv);
 
             SekcijeItems.Items.Refresh();
-            MarkeriItems.Items.Refresh();
+           // MarkeriItems.Items.Refresh();
             UpdateSekcijaDetails(_editingSekcija);
 
             SaveSekcijeToFile();
@@ -732,7 +789,6 @@ namespace BotanickaBasta
             popupBastovan.IsOpen = true;
 
         }
-
         private void Edit_Click(object sender, RoutedEventArgs e)
         {
             if (BastovaniGrid.SelectedItem is not Bastovan sel)
@@ -753,7 +809,6 @@ namespace BotanickaBasta
             popupBastovan.IsOpen = true;
 
         }
-
         private void Delete_Click(object sender, RoutedEventArgs e)
         {
             if (BastovaniGrid.SelectedItem is not Bastovan sel)
@@ -771,7 +826,6 @@ namespace BotanickaBasta
             Bastovani.Remove(sel);
             SaveBastovaniToFile();
         }
-
         private void popupBastovan_Opened(object? sender, EventArgs e)
         {
             txtIme.Focus();
@@ -843,7 +897,6 @@ namespace BotanickaBasta
 
             popupBastovan.IsOpen = false;
         }
-
         private void ucitajBastovane(string putanja)
         {
             StreamReader sr = null;
@@ -872,8 +925,6 @@ namespace BotanickaBasta
                 sr?.Close();
             }
         }
-
-
         private static bool IsPhoneValid(string input)
         {
             if (string.IsNullOrWhiteSpace(input)) return false;
@@ -883,7 +934,6 @@ namespace BotanickaBasta
             int digits = input.Count(char.IsDigit);
             return digits >= 6 && digits <= 15;
         }
-
         private bool IsDuplicateId(int id)
         {
             return Bastovani.Any(b => b.Id == id && !ReferenceEquals(b, _editingTarget));
@@ -955,7 +1005,6 @@ namespace BotanickaBasta
             popupZaduzenja.IsOpen = false;
             _assignTarget = null;
         }
-
         private void SaveAssignmentsToFile()
         {
             try
@@ -999,6 +1048,143 @@ namespace BotanickaBasta
                 MessageBox.Show("Greška pri učitavanju zaduženja: " + ex.Message);
             }
         }
+        private enum UndoType { AddToSekcija, RemoveFromSekcija }
+        private struct UndoOp
+        {
+            public UndoType Type;
+            public MapSekcija Sekcija;
+            public Biljka Biljka;
+            public string OldStatus;
+            public string OldLokacija;
+        }
+        private readonly Stack<UndoOp> _undoStack = new Stack<UndoOp>();
+
+        private void SaveSectionAssignmentsToFile()
+        {
+            try
+            {
+                using var sw = new StreamWriter(SEKCIJA_BILJKE, false, Encoding.UTF8);
+                foreach (var ms in MapSekcije)
+                {
+                    foreach (var b in ms.BiljkeUSekciji)
+                    {
+                        // format: NazivSekcije,SifraBiljke
+                        sw.WriteLine($"{ms.Sekcija.Naziv},{b.Sifra}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Greška pri upisu zaduženja sekcija: " + ex.Message);
+            }
+        }
+
+        private void LoadSectionAssignmentsFromFile(string putanja)
+        {
+            if (!File.Exists(putanja)) return;
+
+            try
+            {
+                var mapSek = MapSekcije.ToDictionary(s => s.Sekcija.Naziv);
+                var mapBiljke = biljke.ToDictionary(b => b.Sifra);
+
+                foreach (var line in File.ReadAllLines(putanja, Encoding.UTF8))
+                {
+                    if (string.IsNullOrWhiteSpace(line)) continue;
+                    var p = line.Split(',');
+                    if (p.Length < 2) continue;
+
+                    string nazivSek = p[0].Trim();
+                    if (!int.TryParse(p[1], out int sifra)) continue;
+
+                    if (mapSek.TryGetValue(nazivSek, out var ms) &&
+                        mapBiljke.TryGetValue(sifra, out var b) &&
+                        !ms.BiljkeUSekciji.Any(x => x.Sifra == b.Sifra))
+                    {
+                        ms.BiljkeUSekciji.Add(b);
+
+                        // važno: sinhronizuj stanje biljke
+                        b.Lokacija = ms.Sekcija.Naziv;
+                        b.Status = STATUS_U_SEKCIJI;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Greška pri učitavanju zaduženja sekcija: " + ex.Message);
+            }
+        }
+
+        private void DodeliBiljkuUSekciju_Click(object sender, RoutedEventArgs e)
+        {
+            if (_selektovana == null)
+            {
+                MessageBox.Show("Najpre izaberite sekciju na mapi.");
+                return;
+            }
+
+            var b = BiljkeListBox?.SelectedItem as Biljka;
+            if (b == null)
+            {
+                MessageBox.Show("Izaberite biljku iz liste zaduženih biljaka baštovana.");
+                return;
+            }
+
+
+            if (!string.IsNullOrWhiteSpace(b.Status) &&
+                ZABRANJENI_STATUSI.Any(s => string.Equals(s, b.Status, StringComparison.OrdinalIgnoreCase)))
+            {
+                MessageBox.Show($"Biljka sa statusom '{b.Status}' ne može da se dodeli u sekciju.");
+                return;
+            }
+
+            if (_selektovana.BiljkeUSekciji.Any(x => x.Sifra == b.Sifra))
+            {
+                MessageBox.Show("Ova biljka je već u izabranoj sekciji.");
+                return;
+            }
+
+            if (string.Equals(b.Status, STATUS_U_SEKCIJI, StringComparison.OrdinalIgnoreCase) &&
+                !string.IsNullOrWhiteSpace(b.Lokacija) &&
+                !string.Equals(b.Lokacija, _selektovana.Sekcija?.Naziv, StringComparison.OrdinalIgnoreCase))
+            {
+                MessageBox.Show($"Biljka je već u sekciji '{b.Lokacija}'. Uklonite je odatle pre premeštanja.");
+                return;
+            }
+
+            if (_selektovana.Sekcija != null &&
+                _selektovana.BiljkeUSekciji.Count >= _selektovana.Sekcija.KapacitetMax)
+            {
+                MessageBox.Show("Sekcija je popunjena (kapacitet).");
+                return;
+            }
+
+            var oldStatus = b.Status;
+            var oldLokacija = b.Lokacija;
+
+            _selektovana.BiljkeUSekciji.Add(b);
+
+            b.Status = STATUS_U_SEKCIJI;
+            b.Lokacija = _selektovana.Sekcija?.Naziv ?? b.Lokacija;
+
+            SaveSectionAssignmentsToFile(); 
+            SacuvajUFajl();                 
+
+            _undoStack.Push(new UndoOp
+            {
+                Type = UndoType.AddToSekcija,
+                Sekcija = _selektovana,
+                Biljka = b,
+                OldStatus = oldStatus,
+                OldLokacija = oldLokacija
+            });
+            if (btnUndo != null) btnUndo.IsEnabled = _undoStack.Count > 0;
+        }
+
+
+
+
+
 
 
     }
