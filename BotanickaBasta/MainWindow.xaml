@@ -166,18 +166,15 @@ MinRowHeight="30"
                 </Border>
             </TabItem>
 
-            <!-- TAB 2: Mapa + Baštovani -->
+            <!-- TAB 2 -->
             <TabItem Header="Mapa baste i bastovani">
 
                 <Grid UseLayoutRounding="True" SnapsToDevicePixels="True">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="23*" MinWidth="400"/>
                         <ColumnDefinition Width="836*"/>
-                        <!-- mapa -->
                         <ColumnDefinition Width="5"/>
-                        <!-- Srednji spliter -->
                         <ColumnDefinition Width="430*" MinWidth="300"/>
-                        <!-- bastovani -->
                     </Grid.ColumnDefinitions>
 
                     <!-- MAPA -->
@@ -225,7 +222,7 @@ MinRowHeight="30"
                                                 <StackPanel Margin="6" IsHitTestVisible="False">
                                                     <TextBlock Text="{Binding Sekcija.Naziv}"
                    FontWeight="Bold" Margin="0,0,0,4"/>
-                                                    <!-- Ispis biljaka u sekciji -->
+                                                    <!-- biljke u sekciji -->
                                                     <ItemsControl ItemsSource="{Binding BiljkeUSekciji}">
                                                         <ItemsControl.ItemTemplate>
                                                             <DataTemplate>
@@ -269,7 +266,7 @@ MinRowHeight="30"
                    Margin="0,0,0,10"
                    HorizontalAlignment="Center"/>
 
-                            <!-- Dugmad bastovani -->
+
                             <Border Grid.Row="1"  Padding="6" Margin="5,0,5,8"
                 BorderBrush="#EEE" BorderThickness="1" CornerRadius="6" Background="#FCFCFC">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 0 0 0">
@@ -306,8 +303,6 @@ MinRowHeight="30"
                                 </DataGrid.Columns>
                             </DataGrid>
 
-
-                            <!-- Naslov liste biljaka -->
                             <TextBlock Grid.Row="4" Margin="5,10,5,5" FontWeight="Bold">
             <Run Text="Biljke za koje je zadužen"/>
                             </TextBlock>
@@ -318,7 +313,7 @@ MinRowHeight="30"
                  DisplayMemberPath="UobicajeniNaziv"
                  SelectionChanged="BiljkeListBox_SelectionChanged"/>
 
-                            <!-- Detalji sekcije (read-only) -->
+                            <!-- Detalji sekcije-->
                             <Border Grid.Row="6" Margin="5,12,5,10" Padding="8"
                 BorderBrush="#DDD" BorderThickness="1" CornerRadius="8" Background="#FAFAFA">
                                 <Grid>
@@ -349,7 +344,6 @@ MinRowHeight="30"
                                 </Grid>
                             </Border>
 
-                            <!-- Raspored biljaka (dodela/uklanjanje/undo) -->
                             <Border Grid.Row="7" Margin="5,0,5,8" Padding="6"
                 BorderBrush="#EEE" BorderThickness="1" CornerRadius="6" Background="#FCFCFC">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -481,7 +475,6 @@ Click="btnEditSekcija_Click" IsEnabled="False"/>
                     </Popup>
                     
                     <!--POPUP Zaduzen biljke-->
-                    <!-- POPUP: zaduženja baštovana -->
                     <Popup x:Name="popupZaduzenja"
        PlacementTarget="{Binding ElementName=RootGrid}"
        Placement="Center"

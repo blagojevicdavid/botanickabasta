@@ -54,7 +54,7 @@ namespace BotanickaBasta
         private int ukupnoStranica => (int)Math.Ceiling((double)biljke.Count / stavkiPoStranici);
 
         private const string STATUS_U_SEKCIJI = "U sekciji";
-        private const string STATUS_SLOBODNA = "Aktivna"; // ili "Slobodna" – koristi isti naziv svuda
+        private const string STATUS_SLOBODNA = "Aktivna";
         private static readonly string[] ZABRANJENI_STATUSI = { "Uginula", "Arhivirana", "Neaktivna" };
 
 
@@ -83,23 +83,6 @@ namespace BotanickaBasta
             // Binding
             DataContext = this;
 
-            //Test podaci
-            #region testpodaci
-            ucitajBastovane(BASTOVANI);
-            LoadSekcijeFromFile(SEKCIJE);
-            
-            
-            /*foreach (var b in Bastovani)
-            {
-                MessageBox.Show(b.zaduzeneBiljke[0].NaucniNaziv);
-                //b.zaduzeneBiljke;
-            }*/
-
-
-            //Bastovani[0].zaduzeneBiljke.Add(new Biljka(101, "Rosa canina", "Šipak", "Rosaceae", "12/04/2023", "Rosarium", "Aktivna"));
-
-            #endregion
-
             #region TAB 1
             ucitajFajlove(ULAZ);
             foreach (var b in biljke)
@@ -112,6 +95,9 @@ namespace BotanickaBasta
             #endregion
 
             #region TAB 2
+            ucitajBastovane(BASTOVANI);
+            LoadSekcijeFromFile(SEKCIJE);
+
             LoadAssignmentsFromFile(BASTOVAN_BILJKE);
             LoadSectionAssignmentsFromFile(SEKCIJA_BILJKE);
 
@@ -122,9 +108,8 @@ namespace BotanickaBasta
 
 
 
-        #region TAB1
+        #region TAB 1
 
-        //-------------------------------------------------------------------------
         const string ULAZ = @"..\..\..\podaci\ulaz.txt";
         const string IZLAZ = @"..\..\..\podaci\izlaz.csv";
         private void Biljka_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -412,47 +397,42 @@ namespace BotanickaBasta
 
         private void biljkeDG_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            // Dohvati element na koji je kliknuto
+           
             var dep = (DependencyObject)e.OriginalSource;
-
-            // Penji se kroz vizualno stablo dok ne nađeš DataGridRow ili null
             while (dep != null && !(dep is DataGridRow))
             {
                 dep = VisualTreeHelper.GetParent(dep);
             }
 
-            // Ako nije DataGridRow, znači da je kliknuto u prazno
             if (dep == null)
             {
                 biljkeDG.UnselectAll();
                 biljkeDG.SelectedItem = null;
             }
         }
+        private void biljkeDG_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
         #endregion
 
 
         #region TAB2
-        // ===================== MAPA HANDLERI ====================
-        // Klik na oblast sekcije 
         private void SekcijaArea_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var s = (sender as FrameworkElement)?.DataContext as MapSekcija;
             if (s != null) SelectSekcija(s);
             e.Handled = true;
         }
-
-        // Klik na marker
-        private void Marker_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void Marker_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) //markeri se vise ne koriste
         {
             var s = (sender as FrameworkElement)?.DataContext as MapSekcija;
             if (s != null) SelectSekcija(s);
             e.Handled = true;
         }
 
-        // Zajednički selektor: gasi stari highlight, pali novi (i na oblasti i na markeru).
         private void SelectSekcija(MapSekcija s)
         {
-            // skini highlight sa prethodne
             if (_selektovana != null)
             {
                 var oldAreaCP = SekcijeItems.ItemContainerGenerator.ContainerFromItem(_selektovana) as ContentPresenter;
@@ -468,13 +448,10 @@ namespace BotanickaBasta
                // if (oldBadge != null)
                 //    oldBadge.Background = (Brush)new BrushConverter().ConvertFromString("#2D89EF");
             }
-
-            // postavi novu selekciju
             _selektovana = s;
 
             if (s != null)
             {
-                // upali highlight na novoj
                 var areaCP = SekcijeItems.ItemContainerGenerator.ContainerFromItem(_selektovana) as ContentPresenter;
                 var rect = FindChild<Rectangle>(areaCP, "AreaRect");
                 if (rect != null)
@@ -488,14 +465,11 @@ namespace BotanickaBasta
                // if (badge != null)
                //     badge.Background = Brushes.OrangeRed;
             }
-
-            // ⬇️ KLJUČNO: odmah osveži detalje i dugmad na PRVI klik
             UpdateSekcijaDetails(_selektovana);
             UpdateButtons();
 
         }
 
-        // nađi element po imenu unutar DataTemplate visual-tree-a.
         private T FindChild<T>(DependencyObject parent, string name) where T : FrameworkElement
         {
             if (parent == null) return null;
@@ -511,7 +485,6 @@ namespace BotanickaBasta
             return null;
         }
 
-        // handler za prazan klik na kanvas
         private void Mapa_ClearSelection(object sender, MouseButtonEventArgs e)
         {
             SelectSekcija(null);
@@ -562,22 +535,17 @@ namespace BotanickaBasta
                 return;
             }
 
-            // UNDO – zapamti staro stanje
             var oldStatus = b.Status;
             var oldLokacija = b.Lokacija;
 
-            // 1) Ukloni iz sekcije
             _selektovana.BiljkeUSekciji.Remove(hit);
 
-            // 2) Vrati biljku u “slobodno” stanje
             b.Status = STATUS_SLOBODNA;
             b.Lokacija = string.Empty;
 
-            // 3) Snimi u fajlove
-            SaveSectionAssignmentsToFile(); // sekcija_biljke.txt
-            SacuvajUFajl();                 // ulaz.txt
+            SaveSectionAssignmentsToFile();
+            SacuvajUFajl();
 
-            // 4) UNDO zapis
             _undoStack.Push(new UndoOp
             {
                 Type = UndoType.RemoveFromSekcija,
@@ -709,12 +677,11 @@ namespace BotanickaBasta
                     if (!int.TryParse(p[5], out int w)) continue;
                     if (!int.TryParse(p[6], out int h)) continue;
 
-                    // p[7] = marker label iz fajla (ignorišemo ga, generisaćemo)
                     if (!int.TryParse(p[8], out int mx)) continue;
                     if (!int.TryParse(p[9], out int my)) continue;
 
                     var s = new Sekcija(naziv, kap, opis);
-                    var label = GetMarkerLabel(naziv); // uvek iz naziva
+                    var label = GetMarkerLabel(naziv);
                     var ms = new MapSekcija(s, x, y, w, h, new Marker(label, mx, my));
                     MapSekcije.Add(ms);
                 }
@@ -993,7 +960,7 @@ namespace BotanickaBasta
             cbSveBiljke.ItemsSource = biljke;              // sve biljke sa prvog taba
             cbSveBiljke.DisplayMemberPath = "UobicajeniNaziv";
 
-            lbZaduzene.ItemsSource = sel.zaduzeneBiljke;   // živa kolekcija
+            lbZaduzene.ItemsSource = sel.zaduzeneBiljke;
             popupZaduzenja.IsOpen = true;
         }
         private void AssignAdd_Click(object sender, RoutedEventArgs e)
@@ -1086,7 +1053,6 @@ namespace BotanickaBasta
                 {
                     foreach (var b in ms.BiljkeUSekciji)
                     {
-                        // format: NazivSekcije,SifraBiljke
                         sw.WriteLine($"{ms.Sekcija.Naziv},{b.Sifra}");
                     }
                 }
@@ -1121,7 +1087,6 @@ namespace BotanickaBasta
                     {
                         ms.BiljkeUSekciji.Add(b);
 
-                        // važno: sinhronizuj stanje biljke
                         b.Lokacija = ms.Sekcija.Naziv;
                         b.Status = STATUS_U_SEKCIJI;
                     }
@@ -1137,7 +1102,7 @@ namespace BotanickaBasta
         {
             if (_selektovana == null)
             {
-                MessageBox.Show("Najpre izaberite sekciju na mapi.");
+                MessageBox.Show("Prvo izaberite sekciju na mapi.");
                 return;
             }
 
@@ -1199,15 +1164,6 @@ namespace BotanickaBasta
             if (btnUndo != null) btnUndo.IsEnabled = _undoStack.Count > 0;
         }
 
-
-
-
-
-
-        private void biljkeDG_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
     }
 
 
