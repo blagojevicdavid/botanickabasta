@@ -1,0 +1,4 @@
+﻿Staklenik,30,Staklena bašta,20,20,260,160,ST,140,90
+Alpinetum,20,Planinske vrste,320,20,420,120,AL,520,70
+Rosarium,50,Ružičnjak,20,220,260,160,RO,135,290
+Arboretum,40,Drvenaste,300,220,480,240,AR,520,315

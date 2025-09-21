@@ -19,7 +19,7 @@ namespace BotanickaBasta
         {
             this.naziv = naziv;
             this.kapacitetMax = kapacitetMax;
-            this.opis = opis ?? "";
+            this.opis = opis;
         }
 
         public string Naziv { get { return naziv; } set { naziv = value; } }

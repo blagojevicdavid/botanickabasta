@@ -33,6 +33,9 @@ namespace BotanickaBasta
 
         // Leva mapa – sekcije i markeri
         public ObservableCollection<MapSekcija> MapSekcije { get; } = new();
+        private const string SEKCIJE = @"..\..\..\podaci\sekcija.txt";
+        private MapSekcija? _editingSekcija = null;
+
 
         // Trenutno selektovana sekcija na mapi
         private MapSekcija _selektovana;
@@ -54,19 +57,19 @@ namespace BotanickaBasta
             //Test podaci
             #region testpodaci
             ucitajBastovane(BASTOVANI);
-
+            LoadSekcijeFromFile(SEKCIJE);
 
             // ===== Test podaci: sekcije + markeri na mapi =====
-            var s1 = new Sekcija("Staklenik", 30, "Staklena bašta");
-            var s2 = new Sekcija("Alpinetum", 20, "Planinske vrste");
-            var s3 = new Sekcija("Rosarium", 50, "Ružičnjak");
-            var s4 = new Sekcija("Arboretum", 80, "Drvenaste vrste");
+            //var s1 = new Sekcija("Staklenik", 30, "Staklena bašta");
+            //var s2 = new Sekcija("Alpinetum", 20, "Planinske vrste");
+            //var s3 = new Sekcija("Rosarium", 50, "Ružičnjak");
+            //var s4 = new Sekcija("Arboretum", 80, "Drvenaste vrste");
 
             // Oblasti (X,Y,Š,V) + Marker (Labela, X, Y) — u koordinatama platna (npr. 800x600)
-            MapSekcije.Add(new MapSekcija(s1, 20, 20, 260, 160, new Marker("S1", 20 + 120, 20 + 70)));
-            MapSekcije.Add(new MapSekcija(s2, 320, 20, 420, 120, new Marker("A", 320 + 200, 20 + 50)));
-            MapSekcije.Add(new MapSekcija(s3, 20, 220, 260, 160, new Marker("R", 20 + 115, 220 + 70)));
-            MapSekcije.Add(new MapSekcija(s4, 300, 220, 480, 240, new Marker("AR", 300 + 220, 220 + 95)));
+            //MapSekcije.Add(new MapSekcija(s1, 20, 20, 260, 160, new Marker("S1", 20 + 120, 20 + 70)));
+            //MapSekcije.Add(new MapSekcija(s2, 320, 20, 420, 120, new Marker("A", 320 + 200, 20 + 50)));
+            //MapSekcije.Add(new MapSekcija(s3, 20, 220, 260, 160, new Marker("R", 20 + 115, 220 + 70)));
+            //MapSekcije.Add(new MapSekcija(s4, 300, 220, 480, 240, new Marker("AR", 300 + 220, 220 + 95)));
             #endregion
 
             #region TAB 1
@@ -420,7 +423,7 @@ namespace BotanickaBasta
         // Zajednički selektor: gasi stari highlight, pali novi (i na oblasti i na markeru).
         private void SelectSekcija(MapSekcija s)
         {
-            /// skini highlight sa prethodne selekcije
+            // skini highlight sa prethodne
             if (_selektovana != null)
             {
                 var oldAreaCP = SekcijeItems.ItemContainerGenerator.ContainerFromItem(_selektovana) as ContentPresenter;
@@ -437,26 +440,29 @@ namespace BotanickaBasta
                     oldBadge.Background = (Brush)new BrushConverter().ConvertFromString("#2D89EF");
             }
 
-            /// postavi novu selekciju
+            // postavi novu selekciju
             _selektovana = s;
 
-            /// prazan klik
-            if (s == null) return;
-
-            /// upali highlight na NOVOJ selekciji
-            var areaCP = SekcijeItems.ItemContainerGenerator.ContainerFromItem(_selektovana) as ContentPresenter;
-            var rect = FindChild<Rectangle>(areaCP, "AreaRect");
-            if (rect != null)
+            if (s != null)
             {
-                rect.Stroke = Brushes.OrangeRed;
-                rect.StrokeThickness = 3;
+                // upali highlight na novoj
+                var areaCP = SekcijeItems.ItemContainerGenerator.ContainerFromItem(_selektovana) as ContentPresenter;
+                var rect = FindChild<Rectangle>(areaCP, "AreaRect");
+                if (rect != null)
+                {
+                    rect.Stroke = Brushes.OrangeRed;
+                    rect.StrokeThickness = 3;
+                }
+
+                var markCP = MarkeriItems.ItemContainerGenerator.ContainerFromItem(_selektovana) as ContentPresenter;
+                var badge = FindChild<Border>(markCP, "MarkerBadge");
+                if (badge != null)
+                    badge.Background = Brushes.OrangeRed;
             }
 
-            var markCP = MarkeriItems.ItemContainerGenerator.ContainerFromItem(_selektovana) as ContentPresenter;
-            var badge = FindChild<Border>(markCP, "MarkerBadge");
-            if (badge != null)
-                badge.Background = Brushes.OrangeRed;
-
+            // ⬇️ KLJUČNO: odmah osveži detalje i dugmad na PRVI klik
+            UpdateSekcijaDetails(_selektovana);
+            UpdateButtons();
 
         }
 
@@ -485,7 +491,7 @@ namespace BotanickaBasta
 
         #region Desni panel: handleri i pomoćne metode
 
-        // --- SelectionChanged (DataGrid baštovana / ListBox biljaka) ---
+       
         private void BastovaniGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             UpdateButtons();
@@ -498,16 +504,12 @@ namespace BotanickaBasta
             UpdateButtons();
         }
 
-        // --- Dugmad: Sekcije ---
-
         private void IzmeniSekciju_Click(object sender, RoutedEventArgs e)
         {
             if (_selektovana == null) return;
             MessageBox.Show($"Izmeni sekciju: {_selektovana.Sekcija?.Naziv} – nije još implementirano.");
         }
 
-
-        // --- Dugmad: Raspored biljaka ---
         private void DodeliBiljkuUSekciju_Click(object sender, RoutedEventArgs e)
         {
             var b = BiljkeListBox?.SelectedItem as Biljka1;
@@ -531,21 +533,25 @@ namespace BotanickaBasta
             UpdateButtons();
         }
 
-        // --- Pomoćno: enable/disable dugmadi prema selekciji ---
+        
         private void UpdateButtons()
         {
             bool hasSekcija = _selektovana != null;
-            bool hasBiljka = (BiljkeListBox?.SelectedItem as Biljka1) != null;
+            bool hasBiljka = (BiljkeListBox?.SelectedItem as Biljka) != null;
+
+            if (btnEditSekcija != null) btnEditSekcija.IsEnabled = (_selektovana != null);
 
             if (btnAssign != null) btnAssign.IsEnabled = hasSekcija && hasBiljka;
             if (btnRemoveFromSekcija != null) btnRemoveFromSekcija.IsEnabled = hasSekcija;
             if (btnUndo != null) btnUndo.IsEnabled = false;
+
+            if (btnEditSekcija != null) btnEditSekcija.IsEnabled = hasSekcija;
+
         }
 
-        // --- Pomoćno: osvežavanje panela "Detalji sekcije" ---
         private void UpdateSekcijaDetails(MapSekcija s)
         {
-            if (SekcijaNazivVal == null) return; // XAML još nije spreman?
+            if (SekcijaNazivVal == null) return; 
 
             if (s == null)
             {
@@ -560,11 +566,155 @@ namespace BotanickaBasta
                 SekcijaKapacitetVal.Text = (s.Sekcija != null) ? s.Sekcija.KapacitetMax.ToString() : "—";
             }
         }
+        private void btnEditSekcija_Click(object sender, RoutedEventArgs e)
+        {
+            if (_selektovana == null)
+            {
+                MessageBox.Show("Najpre izaberite sekciju na mapi.");
+                return;
+            }
+
+            _editingSekcija = _selektovana;
+            PopupSekcijaTitle.Text = $"Izmeni sekciju: {_editingSekcija.Sekcija?.Naziv}";
+
+            txtSekcijaNaziv.Text = _editingSekcija.Sekcija?.Naziv ?? "";
+            txtSekcijaOpis.Text = _editingSekcija.Sekcija?.Opis ?? "";
+            txtKapacitet.Text = (_editingSekcija.Sekcija?.KapacitetMax ?? 0).ToString();
+
+            popupSekcija.IsOpen = true;
+        }
+
+        private static string RemoveDiacritics(string input)
+        {
+            if (string.IsNullOrEmpty(input)) return input;
+            var norm = input.Normalize(NormalizationForm.FormD);
+            var sb = new StringBuilder(input.Length);
+            foreach (var ch in norm)
+                if (CharUnicodeInfo.GetUnicodeCategory(ch) != UnicodeCategory.NonSpacingMark)
+                    sb.Append(ch);
+            return sb.ToString().Normalize(NormalizationForm.FormC);
+        }
+
+        private static string GetMarkerLabel(string naziv)
+        {
+            if (string.IsNullOrWhiteSpace(naziv)) return "?";
+            if (string.IsNullOrWhiteSpace(naziv)) return "?";
+            var letters = new string(RemoveDiacritics(naziv).Where(char.IsLetter).ToArray());
+            if (letters.Length == 0) return "?";
+            if (letters.Length == 1) return letters.ToUpperInvariant();
+            return letters.Substring(0, 2).ToUpperInvariant();
+        }
+
+
+        private void LoadSekcijeFromFile(string putanja)
+        {
+            MapSekcije.Clear();
+            StreamReader sr = null;
+            try
+            {
+                sr = new StreamReader(putanja, Encoding.UTF8);
+                string line;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    if (string.IsNullOrWhiteSpace(line)) continue;
+                    var p = line.Split(',');
+                    if (p.Length < 10) continue;
+
+                    string naziv = p[0].Trim();
+                    if (!int.TryParse(p[1], out int kap)) continue;
+                    string opis = p[2].Trim();
+
+                    if (!int.TryParse(p[3], out int x)) continue;
+                    if (!int.TryParse(p[4], out int y)) continue;
+                    if (!int.TryParse(p[5], out int w)) continue;
+                    if (!int.TryParse(p[6], out int h)) continue;
+
+                    // p[7] = marker label iz fajla (ignorišemo ga, generisaćemo)
+                    if (!int.TryParse(p[8], out int mx)) continue;
+                    if (!int.TryParse(p[9], out int my)) continue;
+
+                    var s = new Sekcija(naziv, kap, opis);
+                    var label = GetMarkerLabel(naziv); // uvek iz naziva
+                    var ms = new MapSekcija(s, x, y, w, h, new Marker(label, mx, my));
+                    MapSekcije.Add(ms);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Greška pri učitavanju sekcija: " + ex.Message);
+            }
+            finally
+            {
+                sr?.Close();
+            }
+        }
+
+        private void SaveSekcijeToFile()
+        {
+            try
+            {
+                using var sw = new StreamWriter(SEKCIJE, false, Encoding.UTF8);
+                for (int i = 0; i < MapSekcije.Count; i++)
+                {
+                    var ms = MapSekcije[i];
+                    var s = ms.Sekcija;
+                    var label = GetMarkerLabel(s.Naziv);
+                    sw.Write($"{s.Naziv},{s.KapacitetMax},{s.Opis},{(int)ms.X},{(int)ms.Y},{(int)ms.Sirina},{(int)ms.Visina},{label},{(int)ms.Marker.X},{(int)ms.Marker.Y}");
+                    if (i < MapSekcije.Count - 1) sw.WriteLine();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Greška pri upisu sekcija: " + ex.Message);
+            }
+        }
+        private void popupSekcija_Opened(object? sender, EventArgs e)
+        {
+            txtSekcijaNaziv.Focus();
+        }
+        private void SekcijaBtnSave_Click(object sender, RoutedEventArgs e)
+        {
+            if (_editingSekcija == null) { popupSekcija.IsOpen = false; return; }
+
+            if (string.IsNullOrWhiteSpace(txtSekcijaNaziv.Text) ||
+                string.IsNullOrWhiteSpace(txtKapacitet.Text))
+            {
+                MessageBox.Show("Popunite Naziv i Kapacitet.");
+                return;
+            }
+
+            if (!int.TryParse(txtKapacitet.Text.Trim(), out int kap) || kap <= 0)
+            {
+                MessageBox.Show("Kapacitet mora biti ceo broj > 0.");
+                return;
+            }
+
+            _editingSekcija.Sekcija.Naziv = txtSekcijaNaziv.Text.Trim();
+            _editingSekcija.Sekcija.Opis = txtSekcijaOpis.Text.Trim();
+            _editingSekcija.Sekcija.KapacitetMax = kap;
+
+            _editingSekcija.Marker.Labela = GetMarkerLabel(_editingSekcija.Sekcija.Naziv);
+
+            SekcijeItems.Items.Refresh();
+            MarkeriItems.Items.Refresh();
+            UpdateSekcijaDetails(_editingSekcija);
+
+            SaveSekcijeToFile();
+
+            popupSekcija.IsOpen = false;
+        }
+        private void SekcijaBtnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            popupSekcija.IsOpen = false;
+            _editingSekcija = null;
+        }
+
+
 
 
         #endregion
 
-
+        #region POPUP za izmenu bastovana
 
         private void Add_Click(object sender, RoutedEventArgs e)
         {
@@ -753,6 +903,8 @@ namespace BotanickaBasta
 
 
 
+
+        #endregion
 
     }
 
