@@ -14,6 +14,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System;
+using System.Text.RegularExpressions;
+
 
 namespace BotanickaBasta
 {
@@ -23,6 +26,10 @@ namespace BotanickaBasta
 
         // Desni panel – bastovani
         public ObservableCollection<Bastovan> Bastovani { get; } = new();
+        private const string BASTOVANI = @"..\..\..\podaci\bastovani.txt";
+        private Bastovan? _editingTarget = null; // null=Dodaj, !=null=Izmena
+
+
 
         // Leva mapa – sekcije i markeri
         public ObservableCollection<MapSekcija> MapSekcije { get; } = new();
@@ -46,16 +53,8 @@ namespace BotanickaBasta
 
             //Test podaci
             #region testpodaci
-            // ===== Test podaci: baštovani =====
-            var g1 = new Bastovan("Marko", "Petrović", 1, "0601234567");
-            var g2 = new Bastovan("Jelena", "Jovanović", 2, "0619876543");
+            ucitajBastovane(BASTOVANI);
 
-            g1.ZaduzeneBiljke.Add(new Biljka1("Ruža"));
-            g2.ZaduzeneBiljke.Add(new Biljka1("Lala"));
-            g2.ZaduzeneBiljke.Add(new Biljka1("Zumbul"));
-
-            Bastovani.Add(g1);
-            Bastovani.Add(g2);
 
             // ===== Test podaci: sekcije + markeri na mapi =====
             var s1 = new Sekcija("Staklenik", 30, "Staklena bašta");
@@ -70,6 +69,7 @@ namespace BotanickaBasta
             MapSekcije.Add(new MapSekcija(s4, 300, 220, 480, 240, new Marker("AR", 300 + 220, 220 + 95)));
             #endregion
 
+            #region TAB 1
             ucitajFajlove(ULAZ);
             foreach (var b in biljke)
                 b.PropertyChanged += Biljka_PropertyChanged;
@@ -77,173 +77,20 @@ namespace BotanickaBasta
             viewSource.Source = biljke;
             viewSource.Filter += FilterStranice;
             biljkeDG.ItemsSource = viewSource.View;
-
             PrikaziStranicu(1);
-        }
+            #endregion
 
-        // ===================== MAPA HANDLERI ====================
-        // Klik na oblast sekcije 
-        private void SekcijaArea_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            var s = (sender as FrameworkElement)?.DataContext as MapSekcija;
-            if (s != null) SelectSekcija(s);
-            e.Handled = true;
-        }
+            #region TAB 2
 
-        // Klik na marker
-        private void Marker_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            var s = (sender as FrameworkElement)?.DataContext as MapSekcija;
-            if (s != null) SelectSekcija(s);
-            e.Handled = true;
-        }
 
-        // Zajednički selektor: gasi stari highlight, pali novi (i na oblasti i na markeru).
-        private void SelectSekcija(MapSekcija s)
-        {
-            /// skini highlight sa prethodne selekcije
-            if (_selektovana != null)
-            {
-                var oldAreaCP = SekcijeItems.ItemContainerGenerator.ContainerFromItem(_selektovana) as ContentPresenter;
-                var oldRect = FindChild<Rectangle>(oldAreaCP, "AreaRect");
-                if (oldRect != null)
-                {
-                    oldRect.Stroke = (Brush)new BrushConverter().ConvertFromString("#5B9BD5");
-                    oldRect.StrokeThickness = 2;
-                }
 
-                var oldMarkCP = MarkeriItems.ItemContainerGenerator.ContainerFromItem(_selektovana) as ContentPresenter;
-                var oldBadge = FindChild<Border>(oldMarkCP, "MarkerBadge");
-                if (oldBadge != null)
-                    oldBadge.Background = (Brush)new BrushConverter().ConvertFromString("#2D89EF");
-            }
-
-            /// postavi novu selekciju
-            _selektovana = s;
-
-            /// prazan klik
-            if (s == null) return;
-
-            /// upali highlight na NOVOJ selekciji
-            var areaCP = SekcijeItems.ItemContainerGenerator.ContainerFromItem(_selektovana) as ContentPresenter;
-            var rect = FindChild<Rectangle>(areaCP, "AreaRect");
-            if (rect != null)
-            {
-                rect.Stroke = Brushes.OrangeRed;
-                rect.StrokeThickness = 3;
-            }
-
-            var markCP = MarkeriItems.ItemContainerGenerator.ContainerFromItem(_selektovana) as ContentPresenter;
-            var badge = FindChild<Border>(markCP, "MarkerBadge");
-            if (badge != null)
-                badge.Background = Brushes.OrangeRed;
-
+            #endregion
 
         }
 
 
-        // nađi element po imenu unutar DataTemplate visual-tree-a.
-        private T FindChild<T>(DependencyObject parent, string name) where T : FrameworkElement
-        {
-            if (parent == null) return null;
-            int n = VisualTreeHelper.GetChildrenCount(parent);
-            for (int i = 0; i < n; i++)
-            {
-                var child = VisualTreeHelper.GetChild(parent, i);
-                if (child is T fe && (string.IsNullOrEmpty(name) || fe.Name == name))
-                    return fe;
-                var hit = FindChild<T>(child, name);
-                if (hit != null) return hit;
-            }
-            return null;
-        }
 
-        // handler za prazan klik na kanvas
-        private void Mapa_ClearSelection(object sender, MouseButtonEventArgs e)
-        {
-            SelectSekcija(null);
-
-        }
-
-        #region Desni panel: handleri i pomoćne metode
-
-        // --- SelectionChanged (DataGrid baštovana / ListBox biljaka) ---
-        private void BastovaniGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            UpdateButtons();
-        }
-
-        private void BiljkeListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            UpdateButtons();
-        }
-
-        // --- Dugmad: Sekcije ---
-
-        private void IzmeniSekciju_Click(object sender, RoutedEventArgs e)
-        {
-            if (_selektovana == null) return;
-            MessageBox.Show($"Izmeni sekciju: {_selektovana.Sekcija?.Naziv} – nije još implementirano.");
-        }
-
-
-        // --- Dugmad: Raspored biljaka ---
-        private void DodeliBiljkuUSekciju_Click(object sender, RoutedEventArgs e)
-        {
-            var b = BiljkeListBox?.SelectedItem as Biljka1;
-            if (_selektovana == null || b == null) return;
-
-            MessageBox.Show($"Dodeli biljku '{b.Naziv}' u sekciju '{_selektovana.Sekcija?.Naziv}' – nije još implementirano.");
-            UpdateButtons();
-        }
-
-        private void UkloniBiljkuIzSekcije_Click(object sender, RoutedEventArgs e)
-        {
-            if (_selektovana == null) return;
-
-            MessageBox.Show($"Ukloni biljku iz sekcije '{_selektovana.Sekcija?.Naziv}' – nije još implementirano.");
-            UpdateButtons();
-        }
-
-        private void PonistiAkciju_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("Poništi (Undo) – nije još implementirano.");
-            UpdateButtons();
-        }
-
-        // --- Pomoćno: enable/disable dugmadi prema selekciji ---
-        private void UpdateButtons()
-        {
-            bool hasSekcija = _selektovana != null;
-            bool hasBiljka = (BiljkeListBox?.SelectedItem as Biljka1) != null;
-
-            if (btnAssign != null) btnAssign.IsEnabled = hasSekcija && hasBiljka;
-            if (btnRemoveFromSekcija != null) btnRemoveFromSekcija.IsEnabled = hasSekcija;
-            if (btnUndo != null) btnUndo.IsEnabled = false;
-        }
-
-        // --- Pomoćno: osvežavanje panela "Detalji sekcije" ---
-        private void UpdateSekcijaDetails(MapSekcija s)
-        {
-            if (SekcijaNazivVal == null) return; // XAML još nije spreman?
-
-            if (s == null)
-            {
-                SekcijaNazivVal.Text = "—";
-                SekcijaOpisVal.Text = "—";
-                SekcijaKapacitetVal.Text = "—";
-            }
-            else
-            {
-                SekcijaNazivVal.Text = s.Sekcija?.Naziv ?? "—";
-                SekcijaOpisVal.Text = s.Sekcija?.Opis ?? "—";
-                SekcijaKapacitetVal.Text = (s.Sekcija != null) ? s.Sekcija.KapacitetMax.ToString() : "—";
-            }
-        }
-
-        #endregion
-
-
+        #region TAB1
 
         //-------------------------------------------------------------------------
         const string ULAZ = @"..\..\..\podaci\ulaz.txt";
@@ -549,8 +396,368 @@ namespace BotanickaBasta
                 biljkeDG.SelectedItem = null;
             }
         }
+        #endregion
+
+
+        #region TAB2
+        // ===================== MAPA HANDLERI ====================
+        // Klik na oblast sekcije 
+        private void SekcijaArea_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var s = (sender as FrameworkElement)?.DataContext as MapSekcija;
+            if (s != null) SelectSekcija(s);
+            e.Handled = true;
+        }
+
+        // Klik na marker
+        private void Marker_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var s = (sender as FrameworkElement)?.DataContext as MapSekcija;
+            if (s != null) SelectSekcija(s);
+            e.Handled = true;
+        }
+
+        // Zajednički selektor: gasi stari highlight, pali novi (i na oblasti i na markeru).
+        private void SelectSekcija(MapSekcija s)
+        {
+            /// skini highlight sa prethodne selekcije
+            if (_selektovana != null)
+            {
+                var oldAreaCP = SekcijeItems.ItemContainerGenerator.ContainerFromItem(_selektovana) as ContentPresenter;
+                var oldRect = FindChild<Rectangle>(oldAreaCP, "AreaRect");
+                if (oldRect != null)
+                {
+                    oldRect.Stroke = (Brush)new BrushConverter().ConvertFromString("#5B9BD5");
+                    oldRect.StrokeThickness = 2;
+                }
+
+                var oldMarkCP = MarkeriItems.ItemContainerGenerator.ContainerFromItem(_selektovana) as ContentPresenter;
+                var oldBadge = FindChild<Border>(oldMarkCP, "MarkerBadge");
+                if (oldBadge != null)
+                    oldBadge.Background = (Brush)new BrushConverter().ConvertFromString("#2D89EF");
+            }
+
+            /// postavi novu selekciju
+            _selektovana = s;
+
+            /// prazan klik
+            if (s == null) return;
+
+            /// upali highlight na NOVOJ selekciji
+            var areaCP = SekcijeItems.ItemContainerGenerator.ContainerFromItem(_selektovana) as ContentPresenter;
+            var rect = FindChild<Rectangle>(areaCP, "AreaRect");
+            if (rect != null)
+            {
+                rect.Stroke = Brushes.OrangeRed;
+                rect.StrokeThickness = 3;
+            }
+
+            var markCP = MarkeriItems.ItemContainerGenerator.ContainerFromItem(_selektovana) as ContentPresenter;
+            var badge = FindChild<Border>(markCP, "MarkerBadge");
+            if (badge != null)
+                badge.Background = Brushes.OrangeRed;
+
+
+        }
+
+        // nađi element po imenu unutar DataTemplate visual-tree-a.
+        private T FindChild<T>(DependencyObject parent, string name) where T : FrameworkElement
+        {
+            if (parent == null) return null;
+            int n = VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < n; i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+                if (child is T fe && (string.IsNullOrEmpty(name) || fe.Name == name))
+                    return fe;
+                var hit = FindChild<T>(child, name);
+                if (hit != null) return hit;
+            }
+            return null;
+        }
+
+        // handler za prazan klik na kanvas
+        private void Mapa_ClearSelection(object sender, MouseButtonEventArgs e)
+        {
+            SelectSekcija(null);
+
+        }
+
+        #region Desni panel: handleri i pomoćne metode
+
+        // --- SelectionChanged (DataGrid baštovana / ListBox biljaka) ---
+        private void BastovaniGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateButtons();
+            Edit.IsEnabled = true;
+            Delete.IsEnabled = true;
+        }
+
+        private void BiljkeListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateButtons();
+        }
+
+        // --- Dugmad: Sekcije ---
+
+        private void IzmeniSekciju_Click(object sender, RoutedEventArgs e)
+        {
+            if (_selektovana == null) return;
+            MessageBox.Show($"Izmeni sekciju: {_selektovana.Sekcija?.Naziv} – nije još implementirano.");
+        }
+
+
+        // --- Dugmad: Raspored biljaka ---
+        private void DodeliBiljkuUSekciju_Click(object sender, RoutedEventArgs e)
+        {
+            var b = BiljkeListBox?.SelectedItem as Biljka1;
+            if (_selektovana == null || b == null) return;
+
+            MessageBox.Show($"Dodeli biljku '{b.Naziv}' u sekciju '{_selektovana.Sekcija?.Naziv}' – nije još implementirano.");
+            UpdateButtons();
+        }
+
+        private void UkloniBiljkuIzSekcije_Click(object sender, RoutedEventArgs e)
+        {
+            if (_selektovana == null) return;
+
+            MessageBox.Show($"Ukloni biljku iz sekcije '{_selektovana.Sekcija?.Naziv}' – nije još implementirano.");
+            UpdateButtons();
+        }
+
+        private void PonistiAkciju_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Poništi (Undo) – nije još implementirano.");
+            UpdateButtons();
+        }
+
+        // --- Pomoćno: enable/disable dugmadi prema selekciji ---
+        private void UpdateButtons()
+        {
+            bool hasSekcija = _selektovana != null;
+            bool hasBiljka = (BiljkeListBox?.SelectedItem as Biljka1) != null;
+
+            if (btnAssign != null) btnAssign.IsEnabled = hasSekcija && hasBiljka;
+            if (btnRemoveFromSekcija != null) btnRemoveFromSekcija.IsEnabled = hasSekcija;
+            if (btnUndo != null) btnUndo.IsEnabled = false;
+        }
+
+        // --- Pomoćno: osvežavanje panela "Detalji sekcije" ---
+        private void UpdateSekcijaDetails(MapSekcija s)
+        {
+            if (SekcijaNazivVal == null) return; // XAML još nije spreman?
+
+            if (s == null)
+            {
+                SekcijaNazivVal.Text = "—";
+                SekcijaOpisVal.Text = "—";
+                SekcijaKapacitetVal.Text = "—";
+            }
+            else
+            {
+                SekcijaNazivVal.Text = s.Sekcija?.Naziv ?? "—";
+                SekcijaOpisVal.Text = s.Sekcija?.Opis ?? "—";
+                SekcijaKapacitetVal.Text = (s.Sekcija != null) ? s.Sekcija.KapacitetMax.ToString() : "—";
+            }
+        }
+
+
+        #endregion
+
+
+
+        private void Add_Click(object sender, RoutedEventArgs e)
+        {
+            _editingTarget = null;
+            PopupTitle.Text = "Dodaj baštovana";
+            txtIme.Text = "";
+            txtPrezime.Text = "";
+            txtZaposlenickiId.Text = "";
+            txtTelefon.Text = "";
+
+            popupBastovan.IsOpen = true;
+
+        }
+
+        private void Edit_Click(object sender, RoutedEventArgs e)
+        {
+            if (BastovaniGrid.SelectedItem is not Bastovan sel)
+            {
+                MessageBox.Show("Selektujte baštovana.");
+                return;
+            }
+
+            _editingTarget = sel;
+
+            PopupTitle.Text = "Izmeni baštovana";
+
+            txtIme.Text = sel.Ime;
+            txtPrezime.Text = sel.Prezime;
+            txtZaposlenickiId.Text = sel.Id.ToString();
+            txtTelefon.Text = sel.Telefon;
+
+            popupBastovan.IsOpen = true;
+
+        }
+
+        private void Delete_Click(object sender, RoutedEventArgs e)
+        {
+            if (BastovaniGrid.SelectedItem is not Bastovan sel)
+            {
+                MessageBox.Show("Selektujte baštovana.");
+                return;
+            }
+
+            var potvrda = MessageBox.Show(
+                $"Obrisati baštovana: {sel.Ime} {sel.Prezime} (ID: {sel.Id})?",
+                "Potvrda brisanja", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (potvrda != MessageBoxResult.Yes) return;
+
+            Bastovani.Remove(sel);
+            SaveBastovaniToFile();
+        }
+
+        private void popupBastovan_Opened(object? sender, EventArgs e)
+        {
+            txtIme.Focus();
+
+        }
+        private void BtnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            popupBastovan.IsOpen = false;
+        }
+        private void BtnSave_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtIme.Text) ||
+                string.IsNullOrWhiteSpace(txtPrezime.Text) ||
+                string.IsNullOrWhiteSpace(txtZaposlenickiId.Text) ||
+                string.IsNullOrWhiteSpace(txtTelefon.Text))
+            {
+                MessageBox.Show("Popunite sva obavezna polja (Ime, Prezime, ID, Telefon).",
+                                "Provera", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+
+            if (!int.TryParse(txtZaposlenickiId.Text.Trim(), out int idVal) || idVal <= 0)
+            {
+                MessageBox.Show("ID mora biti ceo broj veći od nule.",
+                                "Provera", MessageBoxButton.OK, MessageBoxImage.Warning);
+                txtZaposlenickiId.Focus();
+                return;
+            }
+
+            if (IsDuplicateId(idVal))
+            {
+                MessageBox.Show("Ne može postojati baštovan sa istim ID-om.",
+                                "Provera", MessageBoxButton.OK, MessageBoxImage.Warning);
+                txtZaposlenickiId.Focus();
+                return;
+            }
+
+            if (!IsPhoneValid(txtTelefon.Text))
+            {
+                MessageBox.Show("Unesite validan broj telefona (dozvoljeni +, cifre, razmaci, crtice, zagrade; 6–15 cifara).",
+                                "Provera", MessageBoxButton.OK, MessageBoxImage.Warning);
+                txtTelefon.Focus();
+                return;
+            }
+
+            if (_editingTarget != null)
+            {
+                // izmena postojećeg
+                _editingTarget.Ime = txtIme.Text.Trim();
+                _editingTarget.Prezime = txtPrezime.Text.Trim();
+                _editingTarget.Id = idVal;
+                _editingTarget.Telefon = txtTelefon.Text.Trim();
+            }
+            else
+            {
+                // dodavanje novog
+                Bastovani.Add(new Bastovan(
+                    ime: txtIme.Text.Trim(),
+                    prezime: txtPrezime.Text.Trim(),
+                    id: idVal,
+                    telefon: txtTelefon.Text.Trim()
+                ));
+            }
+
+            BastovaniGrid.Items.Refresh();
+
+            SaveBastovaniToFile();
+
+            popupBastovan.IsOpen = false;
+        }
+
+        private void ucitajBastovane(string putanja)
+        {
+            StreamReader sr = null;
+            try
+            {
+                string linija;
+                sr = new StreamReader(putanja);
+                while ((linija = sr.ReadLine()) != null)
+                { 
+                    string[] delovi = linija.Split(',');//string ime, string prezime, int id, string telefon
+                    string ime = delovi[0];
+                    string prezime = delovi[1]; //Petar, Peric, 123, 064646232
+                    int id = int.Parse(delovi[2]);
+                    string telefon = delovi[3];
+
+                    Bastovan bastovan = new Bastovan(ime, prezime, id, telefon);
+                    Bastovani.Add(bastovan);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                sr?.Close();
+            }
+        }
+
+
+        private static bool IsPhoneValid(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input)) return false;
+            if (!Regex.IsMatch(input, @"^\+?[0-9\s\-\(\)]+$"))
+                return false;
+
+            int digits = input.Count(char.IsDigit);
+            return digits >= 6 && digits <= 15;
+        }
+
+        private bool IsDuplicateId(int id)
+        {
+            return Bastovani.Any(b => b.Id == id && !ReferenceEquals(b, _editingTarget));
+        }
+        private void SaveBastovaniToFile()
+        {
+            try
+            {
+                using var sw = new StreamWriter(BASTOVANI, false, Encoding.UTF8);
+                for (int i = 0; i < Bastovani.Count; i++)
+                {
+                    sw.Write(Bastovani[i].ToString()); // mora biti Ime,Prezime,Id,Telefon
+                    if (i < Bastovani.Count - 1) sw.WriteLine();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Greška pri upisu baštovana: " + ex.Message);
+            }
+        }
+
+
+
 
     }
+
+
+    #endregion
 
     public class DatumValidationRule : ValidationRule
     {
@@ -579,6 +786,7 @@ namespace BotanickaBasta
 
             return ValidationResult.ValidResult;
         }
+    
     }
 
 }

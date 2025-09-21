@@ -31,6 +31,7 @@ namespace BotanickaBasta
         public string Telefon { get { return telefon; } set { telefon = value; } }
         public List<Biljka1> ZaduzeneBiljke { get { return zaduzeneBiljke; }  set { zaduzeneBiljke = value; } }
 
+        public override string ToString() => $"{Ime},{Prezime},{Id},{Telefon}";
 
 
 
