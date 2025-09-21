@@ -389,7 +389,7 @@ namespace BotanickaBasta
                 if (biljke.Any(b => b != biljkeDG.SelectedItem && b.Sifra == novaSifra))
                 {
                     MessageBox.Show("Već postoji biljka sa ovom šifrom!");
-                    sifraUnos.Text = "";
+                    sifraUnos.Text = "-1";
                     sifraUnos.Focus();
                 }
             }

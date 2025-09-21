@@ -1,4 +1,4 @@
-1,Aloe vera,Aloe vera,Asphodelaceae,03/03/2023,Rosarium,U sekciji,..\..\..\slike\aloe_leaf.jpg
+-1,Aloe vera,Aloe vera,Asphodelaceae,03/03/2023,Rosarium,U sekciji,..\..\..\slike\aloe_leaf.jpg
 2,Ficus benjamina,Fikus,Moraceae,25/05/2024,Staklenik,U sekciji,..\..\..\slike\Ficus.jpg
 3,Helianthus annuus,Suncokret,Asteraceae,04/08/2025,Rosarium,U sekciji,..\..\..\slike\Helianthus-annuus.jpg
 4,Lavandula Gaas,Lavanda,Lamiaceae,18/09/2025,Alpinetum,U sekciji,..\..\..\slike\lavanda.jpg
