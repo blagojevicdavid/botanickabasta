@@ -21,7 +21,7 @@ using System.Text.RegularExpressions;
 namespace BotanickaBasta
 {
 
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
 
         // Desni panel – bastovani
@@ -45,12 +45,30 @@ namespace BotanickaBasta
         private MapSekcija _selektovana;
 
         // BILJKE ---------------------------------------------------------------------------- BILJKE
-        private ObservableCollection<Biljka> biljke = new ObservableCollection<Biljka>();
+        public ObservableCollection<Biljka> biljke = new ObservableCollection<Biljka>();
         private CollectionViewSource viewSource = new CollectionViewSource();
         private int trenutnaStranica = 1;
         private int stavkiPoStranici = 16;
+        private Biljka _selectedBiljka;
         private int ukupnoStranica => (int)Math.Ceiling((double)biljke.Count / stavkiPoStranici);
         // BILJKE ---------------------------------------------------------------------------- BILJKE
+
+        public Biljka SelectedBiljka
+        {
+            get => _selectedBiljka;
+            set
+            {
+                if (_selectedBiljka != value)
+                {
+                    _selectedBiljka = value;
+                    OnPropertyChanged(nameof(SelectedBiljka));
+                }
+            }
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
         public MainWindow()
         {
             InitializeComponent();
@@ -212,10 +230,10 @@ namespace BotanickaBasta
             }
         }
 
-        private void biljkeDG_MouseDoubleClick(object sender, MouseButtonEventArgs e) ////////////////////////////
-        {
-            this.DataContext = biljkeDG.SelectedItem as Biljka;
-        }
+        //private void biljkeDG_MouseDoubleClick(object sender, MouseButtonEventArgs e) ////////////////////////////
+        //{
+        //    this.DataContext = biljkeDG.SelectedItem as Biljka;
+        //}
 
         private void promeniSliku_Click(object sender, RoutedEventArgs e)
         {
@@ -1000,7 +1018,10 @@ namespace BotanickaBasta
             }
         }
 
+        private void biljkeDG_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
 
+        }
     }
 
 
@@ -1017,13 +1038,13 @@ namespace BotanickaBasta
             DateTime temp;
             string[] formati = new[]
             {
-        "d.M.yyyy",
-        "dd.MM.yyyy",
-        "d/M/yyyy",
-        "dd/MM/yyyy",
-        "d M yyyy",
-        "dd MM yyyy"
-    };
+                "d.M.yyyy",
+                "dd.MM.yyyy",
+                "d/M/yyyy",
+                "dd/MM/yyyy",
+                "d M yyyy",
+                "dd MM yyyy"
+            };
 
             if (!DateTime.TryParseExact(s, formati, cultureInfo, DateTimeStyles.None, out temp))
                 return new ValidationResult(false, "Nevalidan format datuma");
@@ -1035,5 +1056,7 @@ namespace BotanickaBasta
         }
     
     }
+
+
 
 }
